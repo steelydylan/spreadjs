@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="spread.css">
+</head>
+<body>
+	<table class="table">
+		<tr>
+			<th colspan="2">hoge</th>
+		</tr>
+		<tr>
+			<th>hoge</th>
+			<td>test</td>
+		</tr>
+	</table>
+	<script src="http://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+	<script src="./spread.js"></script>
+	<script>
+		$(".table").spread();
+	</script>
+</body>
+</html>
