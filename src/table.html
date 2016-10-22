@@ -1,0 +1,23 @@
+<table class="spread-table">
+	<tr class="spread-table-header">
+		<th></th>
+		<!-- BEGIN highestRow:loop -->
+		<th data-action="selectRow">{i}[noToEn]</th>
+		<!-- END highestRow:loop -->
+	</tr>
+	<!-- BEGIN row:loop -->
+	<tr>
+		<th class="spread-table-side">{i}</th>
+		<!-- \BEGIN row.{i}.col:loop -->
+		<td colspan="\{colspan\}" rowspan="\{rowspan\}" data-action="updateTable({i},\{i\})" class="<!-- \BEGIN selected:exist -->spread-table-selected<!-- \END selected:exist --><!-- \BEGIN type:touch#th --> spread-table-th<!-- END \type:touch#th -->"><div class='spread-table-editable'<!-- \BEGIN selected:exist --> contenteditable<!-- \END selected:exist -->>\{value\}</div><div class='spread-table-pseudo'></div></td>
+		<!-- \END row.{i}.col:loop -->
+	</tr>
+	<!-- END row:loop -->
+</table>
+<!-- BEGIN showMenu:exist -->
+<ul class="spread-table-menu" style="top:{menuY}px;left:{menuX}px;">
+	<li data-action="mergeCell">セルの結合</li>
+	<li data-action="makeTh">thに設定する</li>
+	<li data-action="makeTd">tdに設定する</li>
+</ul>
+<!-- END showMenu:exist -->

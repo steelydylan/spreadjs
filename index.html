@@ -3,22 +3,35 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Document</title>
-	<link rel="stylesheet" href="spread.css">
+	<style>
+		.source-area{
+			margin-top: 10px;
+			padding: 5px;
+			width: 500px;
+			background-color: #eee;
+		}
+	</style>
 </head>
 <body>
 	<table class="table">
 		<tr>
-			<th colspan="2">hoge</th>
+			<th colspan="3">hoge</th>
 		</tr>
 		<tr>
-			<th>hoge</th>
+			<th colspan="2">hoge</th>
 			<td>test</td>
 		</tr>
 	</table>
-	<script src="http://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+	<div class="source-area">
+		<pre class="test"></pre>
+	</div>
 	<script src="./spread.js"></script>
 	<script>
-		$(".table").spread();
+		var spread = new Spread(".table");
+		spread.onUpdated = function(){
+			document.querySelector(".test").innerText = spread.getTable();
+		}
+		spread.onUpdated();
 	</script>
 </body>
 </html>

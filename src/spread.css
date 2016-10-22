@@ -1,0 +1,96 @@
+.spread-table-wrapper{
+	position: relative;
+	z-index: 0;
+	width: 100%;
+}
+
+.spread-table-pseudo{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+}
+
+.spread-table{
+	border-collapse:collapse; 
+	table-layout: fixed;
+	border-collapse: collapse;
+}
+.spread-table input{
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+
+.spread-table td,
+.spread-table th{
+	text-align: left;
+	width: 100px;
+	height: 15px;
+	overflow: hidden;
+	position: relative;
+	z-index: 0;
+	border: 1px solid #CCCCCC;
+}
+
+.spread-table .spread-table-selected{
+	border: 1px solid blue;
+}
+
+.spread-table th{
+	background-color: #eee;
+	font-weight: normal;
+}
+
+.spread-table .spread-table-th{
+	background-color: #ddd;
+	font-weight: bold;
+}
+
+.spread-table-editable{
+	width: 100%;
+	height: 100%;
+}
+
+.spread-table-pseudo{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+}
+
+.spread-table-menu{
+	display: block;
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	position: fixed;
+	top: 0;
+	left: 0;
+	background-color: #FFF;
+	border: 1px solid #666;
+}
+
+.spread-table-menu li{
+	display: block;
+	font-size: 14px;
+	padding: 7px;
+	border-bottom: 1px solid #ddd;
+	cursor: pointer;
+}
+
+.spread-table-menu li:hover{
+	background-color: #eee;
+}
+
+.spread-table-header th{
+	text-align: center;
+}
+
+.spread-table .spread-table-side{
+	text-align: center;
+}
