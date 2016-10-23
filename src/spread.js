@@ -29,27 +29,46 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		}
 		return ret;
 	},
-	getPoint:function(item){
-		
-	},
-	selectRange:function(a,b){
-		var point = this.data.point;
-		var minX = Math.min(a,point.x);
-		var minY = Math.min(b,point.y);
-		var maxX = Math.max(a,point.x);
-		var maxY = Math.max(b,point.y);
+	getPoint:function(x,y){
+		var lengthX = 0;
+		var lengthY = 0;
 		this.data.row.forEach(function(item,i){
 			item.col.forEach(function(obj,t){
-				if(i >= minX && i <= maxX && t >= minY && t <= maxY){
+				if(t < x && i == y){
+					lengthX += parseInt(obj.colspan);
+				}
+				console.log(t,x);
+				if(i < y && t == x){
+					lengthY += parseInt(obj.rowspan);
+				}
+			})
+		});
+		return {x:lengthX,y:lengthY};
+	},
+	selectRange:function(a,b){
+		var self = this;
+		var point1 = this.getPoint(this.data.point.x,this.data.point.y);
+		var point2 = this.getPoint(b,a);
+		console.log(point1,point2);
+		var minX = Math.min(point1.x,point2.x);
+		var minY = Math.min(point1.y,point2.y);
+		var maxX = Math.max(point1.x,point2.x);
+		var maxY = Math.max(point1.y,point2.y);
+		this.data.row.forEach(function(item,i){
+			item.col.forEach(function(obj,t){
+				var point = self.getPoint(t,i);
+				console.log(t,i,point);
+				if(point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY){
 					obj.selected = true;
 				}
 			});
 		});
-		this.data.point = {x:a,y:b};
+		this.data.point = {x:b,y:a};
 		this.update();
 	},
 	select:function(a,b){
-		this.data.point = {x:a,y:b};
+		console.log(this.getPoint(b,a));
+		this.data.point = {x:b,y:a};
 		this.data.row.forEach(function(item,i){
 			item.col.forEach(function(obj,t){
 				if(i !== a || t !== b){
@@ -151,7 +170,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		}
 	},
 	method:{
-		updateTable:function(a,b){
+		updateTable:function(b,a){
 			a = parseInt(a);
 			b = parseInt(b);
 			if(this.e.type == "click"){
