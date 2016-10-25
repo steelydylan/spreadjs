@@ -8,9 +8,9 @@ var ids = [];
 $("body").append("<style>"+style+"</style>");
 var Spread = aTemplate.createClass(aTemplate.View,{
 	initialize:function(ele){
-		var id = this.getRandText(10);
-		$(ele).wrap("<div data-id='"+id+"'></div>");
-		this.addTemplate(template,id);
+		this.id = this.getRandText(10);
+		$(ele).wrap("<div data-id='"+this.id+"'></div>");
+		this.addTemplate(template,this.id);
 		this.inherit();
 		this.data.point = {x:-1,y:-1};
 		this.data.row = this.parse($(ele).html());
@@ -30,26 +30,28 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		return ret;
 	},
 	getPoint:function(x,y){
-		var lengthX = 0;
-		var lengthY = 0;
-		this.data.row.forEach(function(item,i){
-			item.col.forEach(function(obj,t){
-				if(t < x && i == y){
-					lengthX += parseInt(obj.colspan);
-				}
-				console.log(t,x);
-				if(i < y && t == x){
-					lengthY += parseInt(obj.rowspan);
-				}
-			})
+		var id = this.id;
+		var $cell = $("[data-id='"+this.id+"'] [data-cell-id='"+x+"-"+y+"']");
+		var left = $cell.offset().left;
+		var top = $cell.offset().top;
+		var returnLeft = -1;
+		var returnTop = -1;
+		$("[data-id='"+this.id+"'] .js-table-header th").each(function(i){
+			if($(this).offset().left == left){
+				returnLeft = i;
+			}
 		});
-		return {x:lengthX,y:lengthY};
+		$("[data-id='"+this.id+"'] .js-table-side th").each(function(i){
+			if($(this).offset().top == top){
+				returnTop = i;
+			}
+		});
+		return {x:returnLeft,y:returnTop};
 	},
 	selectRange:function(a,b){
 		var self = this;
 		var point1 = this.getPoint(this.data.point.x,this.data.point.y);
 		var point2 = this.getPoint(b,a);
-		console.log(point1,point2);
 		var minX = Math.min(point1.x,point2.x);
 		var minY = Math.min(point1.y,point2.y);
 		var maxX = Math.max(point1.x,point2.x);
@@ -57,7 +59,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		this.data.row.forEach(function(item,i){
 			item.col.forEach(function(obj,t){
 				var point = self.getPoint(t,i);
-				console.log(t,i,point);
+				console.log(point);
 				if(point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY){
 					obj.selected = true;
 				}
@@ -67,7 +69,6 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		this.update();
 	},
 	select:function(a,b){
-		console.log(this.getPoint(b,a));
 		this.data.point = {x:b,y:a};
 		this.data.row.forEach(function(item,i){
 			item.col.forEach(function(obj,t){
