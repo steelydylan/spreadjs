@@ -53,13 +53,29 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		});
 		return {x:returnLeft,y:returnTop,width:width,height:height};
 	},
-	makeLargePoint:function(){
-
+	/*pointが入る*/
+	getLargePoint:function(){
+		var minXArr = [];
+		var minYArr = [];
+		var maxXArr = [];
+		var maxYArr = [];
+		for(var i = 0, n = arguments.length; i < n; i++){
+			minXArr.push(arguments[i].x);
+			minYArr.push(arguments[i].y);
+			maxXArr.push(arguments[i].x+arguments[i].width);
+			maxYArr.push(arguments[i].y+arguments[i].height);
+		}
+		var minX = Math.min.apply(Math,minXArr);
+		var minY = Math.min.apply(Math,minYArr);
+		var maxX = Math.min.apply(Math,maxXArr);
+		var maxY = Math.min.apply(Math,maxYArr);
+		return {x:minX,y:minY,with:maxX-minX,height:maxY-minY};
 	},
 	selectRange:function(a,b){
 		var self = this;
 		var point1 = this.getCellInfoByPos(this.data.point.x,this.data.point.y);
 		var point2 = this.getCellInfoByPos(b,a);
+		console.log(this.getLargePoint(point1,point2));
 		var minX = Math.min(point1.x,point2.x);
 		var minY = Math.min(point1.y,point2.y);
 		var maxX = Math.max(point1.x+point1.width,point2.x+point2.width);
