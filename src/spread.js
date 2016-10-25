@@ -41,7 +41,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				returnLeft = i;
 			}
 		});
-		$("[data-id='"+this.id+"'] .js-table-side th").each(function(i){
+		$("[data-id='"+this.id+"'] .js-table-side").each(function(i){
 			if($(this).offset().top == top){
 				returnTop = i;
 			}
@@ -59,7 +59,6 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		this.data.row.forEach(function(item,i){
 			item.col.forEach(function(obj,t){
 				var point = self.getPoint(t,i);
-				console.log(point);
 				if(point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY){
 					obj.selected = true;
 				}
