@@ -1,10 +1,10 @@
-.spread-table-wrapper{
+.spread-table-wrapper {
 	position: relative;
 	z-index: 0;
 	width: 100%;
 }
 
-.spread-table-pseudo{
+.spread-table-pseudo {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -13,48 +13,49 @@
 	z-index: -1;
 }
 
-.spread-table{
-	border-collapse:collapse; 
+.spread-table {
+	border-collapse: collapse;
 	table-layout: fixed;
 	border-collapse: collapse;
 }
-.spread-table input{
+
+.spread-table input {
 	width: 100%;
 	height: 100%;
 	display: block;
 }
 
 .spread-table td,
-.spread-table th{
+.spread-table th {
 	text-align: left;
 	width: 100px;
 	height: 15px;
 	overflow: hidden;
 	position: relative;
 	z-index: 0;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #cccccc;
 }
 
-.spread-table .spread-table-selected{
-	border: 1px solid blue;
-}
-
-.spread-table th{
+.spread-table th {
 	background-color: #eee;
 	font-weight: normal;
 }
 
-.spread-table .spread-table-th{
+.spread-table .spread-table-th {
 	background-color: #ddd;
 	font-weight: bold;
 }
 
-.spread-table-editable{
+.spread-table .spread-table-selected {
+	background-color: #eaf2f9;
+}
+
+.spread-table-editable {
 	width: 100%;
 	height: 100%;
 }
 
-.spread-table-pseudo{
+.spread-table-pseudo {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -63,7 +64,7 @@
 	z-index: -1;
 }
 
-.spread-table-menu{
+.spread-table-menu {
 	display: block;
 	list-style-type: none;
 	padding: 0;
@@ -71,11 +72,11 @@
 	position: fixed;
 	top: 0;
 	left: 0;
-	background-color: #FFF;
+	background-color: #fff;
 	border: 1px solid #666;
 }
 
-.spread-table-menu li{
+.spread-table-menu li {
 	display: block;
 	font-size: 14px;
 	padding: 7px;
@@ -83,14 +84,14 @@
 	cursor: pointer;
 }
 
-.spread-table-menu li:hover{
+.spread-table-menu li:hover {
 	background-color: #eee;
 }
 
-.spread-table-header th{
+.spread-table-header th {
 	text-align: center;
 }
 
-.spread-table .spread-table-side{
+.spread-table .spread-table-side {
 	text-align: center;
 }

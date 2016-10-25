@@ -10727,7 +10727,7 @@ if (typeof module !== 'undefined' && typeof exports === 'object') {
 module.exports = "<table>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<!-- \\BEGIN type:touch#th -->\n\t\t<th colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\">\\{value\\}</th>\n\t\t<!-- \\END type:touch#th -->\n\t\t<!-- \\BEGIN type:touch#td -->\n\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\">\\{value\\}</td>\n\t\t<!-- \\END type:touch#td -->\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>";
 
 },{}],4:[function(require,module,exports){
-module.exports = ".spread-table-wrapper{\n\tposition: relative;\n\tz-index: 0;\n\twidth: 100%;\n}\n\n.spread-table-pseudo{\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 100%;\n\tz-index: -1;\n}\n\n.spread-table{\n\tborder-collapse:collapse; \n\ttable-layout: fixed;\n\tborder-collapse: collapse;\n}\n.spread-table input{\n\twidth: 100%;\n\theight: 100%;\n\tdisplay: block;\n}\n\n.spread-table td,\n.spread-table th{\n\ttext-align: left;\n\twidth: 100px;\n\theight: 15px;\n\toverflow: hidden;\n\tposition: relative;\n\tz-index: 0;\n\tborder: 1px solid #CCCCCC;\n}\n\n.spread-table .spread-table-selected{\n\tborder: 1px solid blue;\n}\n\n.spread-table th{\n\tbackground-color: #eee;\n\tfont-weight: normal;\n}\n\n.spread-table .spread-table-th{\n\tbackground-color: #ddd;\n\tfont-weight: bold;\n}\n\n.spread-table-editable{\n\twidth: 100%;\n\theight: 100%;\n}\n\n.spread-table-pseudo{\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 100%;\n\tz-index: -1;\n}\n\n.spread-table-menu{\n\tdisplay: block;\n\tlist-style-type: none;\n\tpadding: 0;\n\tmargin: 0;\n\tposition: fixed;\n\ttop: 0;\n\tleft: 0;\n\tbackground-color: #FFF;\n\tborder: 1px solid #666;\n}\n\n.spread-table-menu li{\n\tdisplay: block;\n\tfont-size: 14px;\n\tpadding: 7px;\n\tborder-bottom: 1px solid #ddd;\n\tcursor: pointer;\n}\n\n.spread-table-menu li:hover{\n\tbackground-color: #eee;\n}\n\n.spread-table-header th{\n\ttext-align: center;\n}\n\n.spread-table .spread-table-side{\n\ttext-align: center;\n}";
+module.exports = ".spread-table-wrapper {\n\tposition: relative;\n\tz-index: 0;\n\twidth: 100%;\n}\n\n.spread-table-pseudo {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 100%;\n\tz-index: -1;\n}\n\n.spread-table {\n\tborder-collapse: collapse;\n\ttable-layout: fixed;\n\tborder-collapse: collapse;\n}\n\n.spread-table input {\n\twidth: 100%;\n\theight: 100%;\n\tdisplay: block;\n}\n\n.spread-table td,\n.spread-table th {\n\ttext-align: left;\n\twidth: 100px;\n\theight: 15px;\n\toverflow: hidden;\n\tposition: relative;\n\tz-index: 0;\n\tborder: 1px solid #cccccc;\n}\n\n.spread-table th {\n\tbackground-color: #eee;\n\tfont-weight: normal;\n}\n\n.spread-table .spread-table-th {\n\tbackground-color: #ddd;\n\tfont-weight: bold;\n}\n\n.spread-table .spread-table-selected {\n\tbackground-color: #eaf2f9;\n}\n\n.spread-table-editable {\n\twidth: 100%;\n\theight: 100%;\n}\n\n.spread-table-pseudo {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 100%;\n\tz-index: -1;\n}\n\n.spread-table-menu {\n\tdisplay: block;\n\tlist-style-type: none;\n\tpadding: 0;\n\tmargin: 0;\n\tposition: fixed;\n\ttop: 0;\n\tleft: 0;\n\tbackground-color: #fff;\n\tborder: 1px solid #666;\n}\n\n.spread-table-menu li {\n\tdisplay: block;\n\tfont-size: 14px;\n\tpadding: 7px;\n\tborder-bottom: 1px solid #ddd;\n\tcursor: pointer;\n}\n\n.spread-table-menu li:hover {\n\tbackground-color: #eee;\n}\n\n.spread-table-header th {\n\ttext-align: center;\n}\n\n.spread-table .spread-table-side {\n\ttext-align: center;\n}\n";
 
 },{}],5:[function(require,module,exports){
 (function (global){
@@ -10762,13 +10762,18 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		}
 		return ret;
 	},
-	getPoint:function(x,y){
+	getCellByPos:function(x,y){
+		return $("[data-id='"+this.id+"'] [data-cell-id='"+x+"-"+y+"']");
+	},
+	getCellInfoByPos:function(x,y){
 		var id = this.id;
-		var $cell = $("[data-id='"+this.id+"'] [data-cell-id='"+x+"-"+y+"']");
+		var $cell = this.getCellByPos(x,y);
 		var left = $cell.offset().left;
 		var top = $cell.offset().top;
 		var returnLeft = -1;
 		var returnTop = -1;
+		var width = parseInt($cell.attr("colspan")) -1;
+		var height = parseInt($cell.attr("rowspan")) -1;
 		$("[data-id='"+this.id+"'] .js-table-header th").each(function(i){
 			if($(this).offset().left == left){
 				returnLeft = i;
@@ -10779,25 +10784,27 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				returnTop = i;
 			}
 		});
-		return {x:returnLeft,y:returnTop};
+		return {x:returnLeft,y:returnTop,width:width,height:height};
+	},
+	makeLargePoint:function(){
+
 	},
 	selectRange:function(a,b){
 		var self = this;
-		var point1 = this.getPoint(this.data.point.x,this.data.point.y);
-		var point2 = this.getPoint(b,a);
+		var point1 = this.getCellInfoByPos(this.data.point.x,this.data.point.y);
+		var point2 = this.getCellInfoByPos(b,a);
 		var minX = Math.min(point1.x,point2.x);
 		var minY = Math.min(point1.y,point2.y);
-		var maxX = Math.max(point1.x,point2.x);
-		var maxY = Math.max(point1.y,point2.y);
+		var maxX = Math.max(point1.x+point1.width,point2.x+point2.width);
+		var maxY = Math.max(point1.y+point1.height,point2.y+point2.height);
 		this.data.row.forEach(function(item,i){
 			item.col.forEach(function(obj,t){
-				var point = self.getPoint(t,i);
+				var point = self.getCellInfoByPos(t,i);
 				if(point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY){
 					obj.selected = true;
 				}
 			});
 		});
-		this.data.point = {x:b,y:a};
 		this.update();
 	},
 	select:function(a,b){
@@ -10843,40 +10850,6 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		});
 		return arr1;
 	},
-	getTopLeftPoint:function(){
-		var minX = -1;
-		var minY = -1;
-		this.data.row.forEach(function(item,i){
-			item.col.forEach(function(obj,t){
-				if(obj.selected){
-					if(minX == -1 || t <= minX){
-						minX = t;
-					}
-					if(minY == -1 || i <= minY){
-						minY = i;
-					}
-				}
-			});
-		});
-		return {x:minX,y:minY};
-	},
-	getBottomRightPoint:function(){
-		var maxX = -1;
-		var maxY = -1;
-		this.data.row.forEach(function(item,i){
-			item.col.forEach(function(obj,t){
-				if(obj.selected){
-					if(t >= maxX){
-						maxX = t;
-					}
-					if(i >= maxY){
-						maxY = i;
-					}
-				}
-			});
-		});
-		return {x:maxX,y:maxY};
-	},
 	getTable:function(){
 		return this.getHtml(returnTable,true);
 	},
@@ -10920,26 +10893,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			}
 		},
 		mergeCell:function(){
-			var pointMin = this.getTopLeftPoint();
-			var pointMax = this.getBottomRightPoint();
-			var colspan = pointMax.x - pointMin.x + 1;
-			var rowspan = pointMax.y - pointMin.y + 1;
-			this.data.row.forEach(function(item,i){
-				var cols = item.col;
-				for(var t = 0,n = cols.length; t < n; t++){
-					var obj = cols[t];
-					if(obj.selected){
-						if(t !== pointMin.x || i !== pointMin.y){
-							cols.splice(t,1);
-							t--;
-							n--;
-						}else{
-							obj.colspan = colspan;
-							obj.rowspan = rowspan;
-						}
-					}
-				}
-			});
+
 			this.data.showMenu = false;
 			this.update();
 		},
