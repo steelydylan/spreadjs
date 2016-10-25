@@ -84,6 +84,17 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		});
 		return arr;
 	},
+	getAllPoints:function(){
+		var arr = [];
+		var self = this;
+		this.data.row.forEach(function(item,i){
+			item.col.forEach(function(obj,t){
+				var point = self.getCellInfoByIndex(t,i);
+				arr.push(point);
+			});
+		});
+		return arr;
+	},
 	getCellIndexByPos:function(x,y){
 		var a,b;
 		var self = this;

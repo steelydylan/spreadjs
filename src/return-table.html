@@ -3,10 +3,10 @@
 	<tr>
 		<!-- \BEGIN row.{i}.col:loop -->
 		<!-- \BEGIN type:touch#th -->
-		<th colspan="\{colspan\}" rowspan="\{rowspan\}">\{value\}</th>
+		<th<!-- \BEGIN colspan:touchnot#1 --> colspan="\{colspan\}"<!-- \END colspan:touchnot#1 --><!-- \BEGIN rowspan:touchnot#1 --> rowspan="\{rowspan\}"<!-- \END rowspan:touchnot#1 -->>\{value\}</th>
 		<!-- \END type:touch#th -->
 		<!-- \BEGIN type:touch#td -->
-		<td colspan="\{colspan\}" rowspan="\{rowspan\}">\{value\}</td>
+		<td<!-- \BEGIN colspan:touchnot#1 --> colspan="\{colspan\}"<!-- \END colspan:touchnot#1 --><!-- \BEGIN rowspan:touchnot#1 --> rowspan="\{rowspan\}"<!-- \END rowspan:touchnot#1 -->>\{value\}</td>
 		<!-- \END type:touch#td -->
 		<!-- \END row.{i}.col:loop -->
 	</tr>
