@@ -10295,7 +10295,7 @@ $(document).on("input change click","[data-bind]",function(e){
 		}
 	}
 });
-$(document).on("input click change keydown contextmenu","[data-action]",function(e){
+$(document).on("input click change keydown contextmenu mouseup mousedown mousemove","[data-action]",function(e){
 	if(e.type == "click" && $(e.target).is("select")){
 		return;
 	}
@@ -10772,8 +10772,8 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		var top = $cell.offset().top;
 		var returnLeft = -1;
 		var returnTop = -1;
-		var width = parseInt($cell.attr("colspan")) -1;
-		var height = parseInt($cell.attr("rowspan")) -1;
+		var width = parseInt($cell.attr("colspan"));
+		var height = parseInt($cell.attr("rowspan"));
 		$("[data-id='"+this.id+"'] .js-table-header th").each(function(i){
 			if($(this).offset().left == left){
 				returnLeft = i;
@@ -10784,7 +10784,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				returnTop = i;
 			}
 		});
-		return {x:returnLeft,y:returnTop,width:width,height:height};
+		return {x:returnLeft-1,y:returnTop,width:width,height:height};
 	},
 	/*pointが入る*/
 	getLargePoint:function(){
@@ -10800,28 +10800,52 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		}
 		var minX = Math.min.apply(Math,minXArr);
 		var minY = Math.min.apply(Math,minYArr);
-		var maxX = Math.min.apply(Math,maxXArr);
-		var maxY = Math.min.apply(Math,maxYArr);
-		return {x:minX,y:minY,with:maxX-minX,height:maxY-minY};
+		var maxX = Math.max.apply(Math,maxXArr);
+		var maxY = Math.max.apply(Math,maxYArr);
+		return {x:minX,y:minY,width:maxX-minX,height:maxY-minY};
+	},
+	getSelectedPoints:function(){
+		var arr = [];
+		var self = this;
+		this.data.row.forEach(function(item,i){
+			item.col.forEach(function(obj,t){
+				if(obj.selected){
+					var point = self.getCellInfoByPos(t,i);
+					arr.push(point);
+				}
+			});
+		});
+		return arr;
+	},
+	hitTest:function(point1,point2){
+		if((point1.x < point2.x + point2.width) 
+		&& (point2.x < point1.x + point1.width)
+		&& (point1.y < point2.y + point2.height)
+		&& (point2.y < point1.y + point1.height)){
+			return true;
+		}else{
+			return false;
+		}
 	},
 	selectRange:function(a,b){
+		if(!this.data.point){
+			return;
+		}
 		var self = this;
-		var point1 = this.getCellInfoByPos(this.data.point.x,this.data.point.y);
-		var point2 = this.getCellInfoByPos(b,a);
-		console.log(this.getLargePoint(point1,point2));
-		var minX = Math.min(point1.x,point2.x);
-		var minY = Math.min(point1.y,point2.y);
-		var maxX = Math.max(point1.x+point1.width,point2.x+point2.width);
-		var maxY = Math.max(point1.y+point1.height,point2.y+point2.height);
+		this.data.row[a].col[b].selected = true;
+		var points = this.getSelectedPoints();
+		var point3 = this.getLargePoint.apply(null,points);
 		this.data.row.forEach(function(item,i){
 			item.col.forEach(function(obj,t){
 				var point = self.getCellInfoByPos(t,i);
-				if(point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY){
+				if(self.hitTest(point3,point)){
 					obj.selected = true;
 				}
 			});
 		});
-		this.update();
+		if(points.length > 1){
+			this.update();
+		}
 	},
 	select:function(a,b){
 		this.data.point = {x:b,y:a};
@@ -10834,7 +10858,6 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		});
 		if(!this.data.row[a].col[b].selected){
 			this.data.row[a].col[b].selected = true;
-			this.update();
 		}
 	},
 	contextmenu:function(){
@@ -10899,21 +10922,42 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				this.data.showMenu = false;
 				if(this.e.shiftKey){
 					this.selectRange(a,b);
-				}else{
-					this.select(a,b);
 				}
+			}else if(this.e.type == "mousedown"){
+				if(this.e.button !== 2){
+					this.mousedown = true;
+					if(!this.data.row[a].col[b].selected){
+						this.select(a,b);
+						this.update();
+					}else{
+						this.select(a,b);
+					}
+				}
+			}else if(this.e.type == "mousemove"){
+				if(this.mousedown){
+					this.selectRange(a,b);
+				}
+			}else if(this.e.type == "mouseup"){
+				this.mousedown = false;
+				this.selectRange(a,b);
 			}else if(this.e.type == "contextmenu"){
+				this.mousedown = false;
 				this.contextmenu();
 			}else{
 				this.data.row[a].col[b].value = $(this.e.target).text();
 			}
 		},
 		mergeCell:function(){
-
+			if(this.e.type != "click"){
+				return;
+			}
 			this.data.showMenu = false;
 			this.update();
 		},
 		makeTh:function(){
+			if(this.e.type != "click"){
+				return;
+			}
 			this.data.row.forEach(function(item,i){
 				item.col.forEach(function(obj,t){
 					if(obj.selected){
@@ -10925,6 +10969,9 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			this.update();
 		},
 		makeTd:function(){
+			if(this.e.type != "click"){
+				return;
+			}
 			this.data.row.forEach(function(item,i){
 				item.col.forEach(function(obj,t){
 					if(obj.selected){
@@ -10952,6 +10999,6 @@ global["Spread"] = Spread;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./aTemplate.js":2,"./return-table.html":3,"./spread.css":4,"./table.html":6,"jquery":1}],6:[function(require,module,exports){
-module.exports = "<table class=\"spread-table\">\n\t<tr class=\"spread-table-header js-table-header\">\n\t\t<th></th>\n\t\t<!-- BEGIN highestRow:loop -->\n\t\t<th data-action=\"selectRow\">{i}[noToEn]</th>\n\t\t<!-- END highestRow:loop -->\n\t</tr>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<th class=\"spread-table-side js-table-side\">{i}</th>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->spread-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> spread-table-th<!-- END \\type:touch#th -->\"><div class='spread-table-editable'<!-- \\BEGIN selected:exist --> contenteditable<!-- \\END selected:exist -->>\\{value\\}</div><div class='spread-table-pseudo'></div></td>\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n<!-- BEGIN showMenu:exist -->\n<ul class=\"spread-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t<li data-action=\"mergeCell\">セルの結合</li>\n\t<li data-action=\"makeTh\">thに設定する</li>\n\t<li data-action=\"makeTd\">tdに設定する</li>\n</ul>\n<!-- END showMenu:exist -->\n";
+module.exports = "<table class=\"spread-table\">\n\t<tr class=\"spread-table-header js-table-header\">\n\t\t<th></th>\n\t\t<!-- BEGIN highestRow:loop -->\n\t\t<th data-action=\"selectRow\">{i}[noToEn]</th>\n\t\t<!-- END highestRow:loop -->\n\t</tr>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<th class=\"spread-table-side js-table-side\">{i}</th>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->spread-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> spread-table-th<!-- END \\type:touch#th -->\"><div class='spread-table-editable' contenteditable>\\{value\\}</div><div class='spread-table-pseudo'></div></td>\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n<!-- BEGIN showMenu:exist -->\n<ul class=\"spread-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t<li data-action=\"mergeCell\">セルの結合</li>\n\t<li data-action=\"makeTh\">thに設定する</li>\n\t<li data-action=\"makeTd\">tdに設定する</li>\n</ul>\n<!-- END showMenu:exist -->\n";
 
 },{}]},{},[5]);

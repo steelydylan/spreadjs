@@ -72,7 +72,7 @@ $(document).on("input change click","[data-bind]",function(e){
 		}
 	}
 });
-$(document).on("input click change keydown contextmenu","[data-action]",function(e){
+$(document).on("input click change keydown contextmenu mouseup mousedown mousemove","[data-action]",function(e){
 	if(e.type == "click" && $(e.target).is("select")){
 		return;
 	}

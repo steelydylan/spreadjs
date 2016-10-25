@@ -39,8 +39,8 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		var top = $cell.offset().top;
 		var returnLeft = -1;
 		var returnTop = -1;
-		var width = parseInt($cell.attr("colspan")) -1;
-		var height = parseInt($cell.attr("rowspan")) -1;
+		var width = parseInt($cell.attr("colspan"));
+		var height = parseInt($cell.attr("rowspan"));
 		$("[data-id='"+this.id+"'] .js-table-header th").each(function(i){
 			if($(this).offset().left == left){
 				returnLeft = i;
@@ -51,7 +51,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				returnTop = i;
 			}
 		});
-		return {x:returnLeft,y:returnTop,width:width,height:height};
+		return {x:returnLeft-1,y:returnTop,width:width,height:height};
 	},
 	/*pointが入る*/
 	getLargePoint:function(){
@@ -67,28 +67,52 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		}
 		var minX = Math.min.apply(Math,minXArr);
 		var minY = Math.min.apply(Math,minYArr);
-		var maxX = Math.min.apply(Math,maxXArr);
-		var maxY = Math.min.apply(Math,maxYArr);
-		return {x:minX,y:minY,with:maxX-minX,height:maxY-minY};
+		var maxX = Math.max.apply(Math,maxXArr);
+		var maxY = Math.max.apply(Math,maxYArr);
+		return {x:minX,y:minY,width:maxX-minX,height:maxY-minY};
+	},
+	getSelectedPoints:function(){
+		var arr = [];
+		var self = this;
+		this.data.row.forEach(function(item,i){
+			item.col.forEach(function(obj,t){
+				if(obj.selected){
+					var point = self.getCellInfoByPos(t,i);
+					arr.push(point);
+				}
+			});
+		});
+		return arr;
+	},
+	hitTest:function(point1,point2){
+		if((point1.x < point2.x + point2.width) 
+		&& (point2.x < point1.x + point1.width)
+		&& (point1.y < point2.y + point2.height)
+		&& (point2.y < point1.y + point1.height)){
+			return true;
+		}else{
+			return false;
+		}
 	},
 	selectRange:function(a,b){
+		if(!this.data.point){
+			return;
+		}
 		var self = this;
-		var point1 = this.getCellInfoByPos(this.data.point.x,this.data.point.y);
-		var point2 = this.getCellInfoByPos(b,a);
-		console.log(this.getLargePoint(point1,point2));
-		var minX = Math.min(point1.x,point2.x);
-		var minY = Math.min(point1.y,point2.y);
-		var maxX = Math.max(point1.x+point1.width,point2.x+point2.width);
-		var maxY = Math.max(point1.y+point1.height,point2.y+point2.height);
+		this.data.row[a].col[b].selected = true;
+		var points = this.getSelectedPoints();
+		var point3 = this.getLargePoint.apply(null,points);
 		this.data.row.forEach(function(item,i){
 			item.col.forEach(function(obj,t){
 				var point = self.getCellInfoByPos(t,i);
-				if(point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY){
+				if(self.hitTest(point3,point)){
 					obj.selected = true;
 				}
 			});
 		});
-		this.update();
+		if(points.length > 1){
+			this.update();
+		}
 	},
 	select:function(a,b){
 		this.data.point = {x:b,y:a};
@@ -101,7 +125,6 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		});
 		if(!this.data.row[a].col[b].selected){
 			this.data.row[a].col[b].selected = true;
-			this.update();
 		}
 	},
 	contextmenu:function(){
@@ -166,21 +189,42 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				this.data.showMenu = false;
 				if(this.e.shiftKey){
 					this.selectRange(a,b);
-				}else{
-					this.select(a,b);
 				}
+			}else if(this.e.type == "mousedown"){
+				if(this.e.button !== 2){
+					this.mousedown = true;
+					if(!this.data.row[a].col[b].selected){
+						this.select(a,b);
+						this.update();
+					}else{
+						this.select(a,b);
+					}
+				}
+			}else if(this.e.type == "mousemove"){
+				if(this.mousedown){
+					this.selectRange(a,b);
+				}
+			}else if(this.e.type == "mouseup"){
+				this.mousedown = false;
+				this.selectRange(a,b);
 			}else if(this.e.type == "contextmenu"){
+				this.mousedown = false;
 				this.contextmenu();
 			}else{
 				this.data.row[a].col[b].value = $(this.e.target).text();
 			}
 		},
 		mergeCell:function(){
-
+			if(this.e.type != "click"){
+				return;
+			}
 			this.data.showMenu = false;
 			this.update();
 		},
 		makeTh:function(){
+			if(this.e.type != "click"){
+				return;
+			}
 			this.data.row.forEach(function(item,i){
 				item.col.forEach(function(obj,t){
 					if(obj.selected){
@@ -192,6 +236,9 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			this.update();
 		},
 		makeTd:function(){
+			if(this.e.type != "click"){
+				return;
+			}
 			this.data.row.forEach(function(item,i){
 				item.col.forEach(function(obj,t){
 					if(obj.selected){
