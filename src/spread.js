@@ -29,12 +29,12 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		}
 		return ret;
 	},
-	getCellByPos:function(x,y){
+	getCellByIndex:function(x,y){
 		return $("[data-id='"+this.id+"'] [data-cell-id='"+x+"-"+y+"']");
 	},
-	getCellInfoByPos:function(x,y){
+	getCellInfoByIndex:function(x,y){
 		var id = this.id;
-		var $cell = this.getCellByPos(x,y);
+		var $cell = this.getCellByIndex(x,y);
 		var left = $cell.offset().left;
 		var top = $cell.offset().top;
 		var returnLeft = -1;
@@ -77,12 +77,26 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		this.data.row.forEach(function(item,i){
 			item.col.forEach(function(obj,t){
 				if(obj.selected){
-					var point = self.getCellInfoByPos(t,i);
+					var point = self.getCellInfoByIndex(t,i);
 					arr.push(point);
 				}
 			});
 		});
 		return arr;
+	},
+	getCellIndexByPos:function(x,y){
+		var a,b;
+		var self = this;
+		this.data.row.forEach(function(item,i){
+			item.col.forEach(function(obj,t){
+				var point = self.getCellInfoByIndex(t,i);
+				if(point.x == x && point.y == y){
+					a = t;
+					b = i;
+				}
+			});
+		});
+		return this.data.row[b].col[a];
 	},
 	hitTest:function(point1,point2){
 		if((point1.x < point2.x + point2.width) 
@@ -104,7 +118,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		var point3 = this.getLargePoint.apply(null,points);
 		this.data.row.forEach(function(item,i){
 			item.col.forEach(function(obj,t){
-				var point = self.getCellInfoByPos(t,i);
+				var point = self.getCellInfoByIndex(t,i);
 				if(self.hitTest(point3,point)){
 					obj.selected = true;
 				}
@@ -125,6 +139,20 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		});
 		if(!this.data.row[a].col[b].selected){
 			this.data.row[a].col[b].selected = true;
+		}
+	},
+	removeSelectedCellExcept:function(cell){
+		var row = this.data.row;
+		for(var i = 0, n = row.length; i < n; i++){
+			var col = row[i].col;
+			for(var t = 0, m = col.length; t < m; t++){
+				var obj = col[t];
+				if(obj !== cell && obj.selected){
+					col.splice(t,1);
+					t--;
+					m--;
+				}
+			}
 		}
 	},
 	contextmenu:function(){
@@ -218,6 +246,12 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			if(this.e.type != "click"){
 				return;
 			}
+			var points = this.getSelectedPoints();
+			var point = this.getLargePoint.apply(null,points);
+			var cell = this.getCellIndexByPos(point.x,point.y);
+			this.removeSelectedCellExcept(cell);
+			cell.colspan = point.width;
+			cell.rowspan = point.height;
 			this.data.showMenu = false;
 			this.update();
 		},
