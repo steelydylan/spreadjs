@@ -10652,7 +10652,6 @@ aTemplate.View = aTemplate.createClass({
 			}
 		}
 		this.updateBindingData(part);
-		console.log(this.onUpdated);
 		if(this.onUpdated){
 			this.onUpdated();
 		}
@@ -10768,6 +10767,9 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 	getCellInfoByIndex:function(x,y){
 		var id = this.id;
 		var $cell = this.getCellByIndex(x,y);
+		if($cell.length == 0){
+			return false;
+		}
 		var left = $cell.offset().left;
 		var top = $cell.offset().top;
 		var returnLeft = -1;
@@ -10811,7 +10813,9 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			item.col.forEach(function(obj,t){
 				if(obj.selected){
 					var point = self.getCellInfoByIndex(t,i);
-					arr.push(point);
+					if(point){
+						arr.push(point);
+					}
 				}
 			});
 		});
@@ -10823,7 +10827,9 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		this.data.row.forEach(function(item,i){
 			item.col.forEach(function(obj,t){
 				var point = self.getCellInfoByIndex(t,i);
-				arr.push(point);
+				if(point){
+					arr.push(point);
+				}
 			});
 		});
 		return arr;
@@ -10840,7 +10846,11 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				}
 			});
 		});
-		return this.data.row[b].col[a];
+		return {row:b,col:a};
+	},
+	getCellByPos:function(x,y){
+		var index = this.getCellIndexByPos(x,y);
+		return this.data.row[index.row].col[index.col];
 	},
 	hitTest:function(point1,point2){
 		if((point1.x < point2.x + point2.width)
@@ -10863,7 +10873,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		this.data.row.forEach(function(item,i){
 			item.col.forEach(function(obj,t){
 				var point = self.getCellInfoByIndex(t,i);
-				if(self.hitTest(point3,point)){
+				if(point && self.hitTest(point3,point)){
 					obj.selected = true;
 				}
 			});
@@ -10940,6 +10950,11 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			this.afterRendered();
 		}
 	},
+	insertCellAt: function(a,b,item) {
+		if(this.data.row[a]){
+	    	this.data.row[a].col.splice(b+1,0,item);
+		}
+	},
 	data:{
 		highestRow:function(){
 			var arr = [];
@@ -10987,13 +11002,45 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				this.data.row[a].col[b].value = $(this.e.target).text();
 			}
 		},
+		addRightCells:function(){
+			if(this.e.type != "click"){
+				return;
+			}
+			var self = this;
+			var points = this.getAllPoints();
+			var point1 = this.getLargePoint.apply(null,points);
+			var selectedPoints = this.getSelectedPoints();
+			var point2 = this.getLargePoint.apply(null,selectedPoints);
+			var newpoint = {x:point2.x+point2.width-1,y:0,width:1,height:point1.height};
+			var targetPoints = [];
+			points.forEach(function(point){
+				if(self.hitTest(newpoint,point)){
+					targetPoints.push(point);
+				}
+			});
+			targetPoints.forEach(function(point){
+				var index = self.getCellIndexByPos(point.x,point.y);
+				var cell = self.getCellByPos(point.x,point.y);
+				var newcell = {type:"td",colspan:1,rowspan:1,value:""};
+				if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
+					if(point.width + point.x - newpoint.x > 1){
+						cell.colspan = parseInt(cell.colspan) + 1;
+						cell.colspan += "";
+					}else{
+						self.insertCellAt(index.row,index.col,newcell)
+					}
+				}
+			});
+			this.data.showMenu = false;
+			this.update();
+		},
 		mergeCell:function(){
 			if(this.e.type != "click"){
 				return;
 			}
 			var points = this.getSelectedPoints();
 			var point = this.getLargePoint.apply(null,points);
-			var cell = this.getCellIndexByPos(point.x,point.y);
+			var cell = this.getCellByPos(point.x,point.y);
 			this.removeSelectedCellExcept(cell);
 			cell.colspan = point.width;
 			cell.rowspan = point.height;
@@ -11045,6 +11092,6 @@ global["Spread"] = Spread;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./aTemplate.js":2,"./return-table.html":3,"./spread.css":4,"./table.html":6,"jquery":1}],6:[function(require,module,exports){
-module.exports = "<table class=\"spread-table\">\n\t<tr class=\"spread-table-header js-table-header\">\n\t\t<th></th>\n\t\t<!-- BEGIN highestRow:loop -->\n\t\t<th data-action=\"selectRow\">{i}[noToEn]</th>\n\t\t<!-- END highestRow:loop -->\n\t</tr>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<th class=\"spread-table-side js-table-side\">{i}</th>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->spread-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> spread-table-th<!-- END \\type:touch#th -->\"><div class='spread-table-editable' contenteditable>\\{value\\}</div><div class='spread-table-pseudo'></div></td>\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n<!-- BEGIN showMenu:exist -->\n<ul class=\"spread-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t<li data-action=\"mergeCell\">セルの結合</li>\n\t<li data-action=\"makeTh\">thに設定する</li>\n\t<li data-action=\"makeTd\">tdに設定する</li>\n</ul>\n<!-- END showMenu:exist -->\n";
+module.exports = "<table class=\"spread-table\">\n\t<tr class=\"spread-table-header js-table-header\">\n\t\t<th></th>\n\t\t<!-- BEGIN highestRow:loop -->\n\t\t<th data-action=\"selectRow\">{i}[noToEn]</th>\n\t\t<!-- END highestRow:loop -->\n\t</tr>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<th class=\"spread-table-side js-table-side\">{i}</th>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->spread-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> spread-table-th<!-- END \\type:touch#th -->\"><div class='spread-table-editable' contenteditable>\\{value\\}</div><div class='spread-table-pseudo'></div></td>\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n<!-- BEGIN showMenu:exist -->\n<ul class=\"spread-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t<li data-action=\"mergeCell\">セルの結合</li>\n\t<li data-action=\"makeTh\">thに設定する</li>\n\t<li data-action=\"makeTd\">tdに設定する</li>\n\t<li data-action=\"addRightCells\">右に行を追加</li>\n</ul>\n<!-- END showMenu:exist -->\n";
 
 },{}]},{},[5]);

@@ -429,7 +429,6 @@ aTemplate.View = aTemplate.createClass({
 			}
 		}
 		this.updateBindingData(part);
-		console.log(this.onUpdated);
 		if(this.onUpdated){
 			this.onUpdated();
 		}
