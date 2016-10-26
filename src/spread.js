@@ -110,7 +110,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		return this.data.row[b].col[a];
 	},
 	hitTest:function(point1,point2){
-		if((point1.x < point2.x + point2.width) 
+		if((point1.x < point2.x + point2.width)
 		&& (point2.x < point1.x + point1.width)
 		&& (point1.y < point2.y + point2.height)
 		&& (point2.y < point1.y + point1.height)){
@@ -198,26 +198,27 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 	getTable:function(){
 		return this.getHtml(returnTable,true);
 	},
+	onUpdated:function(){
+		var points = this.getAllPoints();
+		var point = this.getLargePoint.apply(null,points);
+		var width = point.width;
+		$(".js-table-header th:gt("+width+")","[data-id='"+this.id+"']").remove();
+		if(this.afterRendered){
+			this.afterRendered();
+		}
+	},
 	data:{
 		highestRow:function(){
-			var high = 0;
-			var index = 0;
-			var i = 0;
-			var cols = [];
-			this.data.row.forEach(function(item){
-				if(item.col.length >= high){
-					high = item.col.length;
-					index = i;
-				}
-				i++;
+			var arr = [];
+			this.data.row.forEach(function(item,i){
+				item.col.forEach(function(obj,t){
+					var length = parseInt(obj.colspan);
+					for (var i = 0; i < length; i++){
+						arr.push(i);
+					}
+				});
 			});
-			this.data.row[index].col.forEach(function(item){
-				var length = parseInt(item.colspan);
-				for(var i = 0; i < length; i++){
-					cols.push({});
-				}
-			});
-			return cols;
+			return arr;
 		}
 	},
 	method:{

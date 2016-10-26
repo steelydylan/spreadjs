@@ -35,10 +35,10 @@
 	<script src="./spread.js"></script>
 	<script>
 		var spread = new Spread(".table");
-		spread.onUpdated = function(){
+		spread.afterRendered = function(){
 			document.querySelector(".test").innerText = spread.getTable();
 		}
-		spread.onUpdated();
+		spread.afterRendered();
 	</script>
 </body>
 </html>

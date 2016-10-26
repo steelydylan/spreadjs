@@ -10652,9 +10652,8 @@ aTemplate.View = aTemplate.createClass({
 			}
 		}
 		this.updateBindingData(part);
-		if(this.method.onUpdated){
-			this.applyMethod("onUpdated");
-		}else if(this.onUpdated){
+		console.log(this.onUpdated);
+		if(this.onUpdated){
 			this.onUpdated();
 		}
 		return this;
@@ -10723,6 +10722,7 @@ if (typeof module !== 'undefined' && typeof exports === 'object') {
 } else {
 	this.aTemplate = aTemplate;
 }
+
 },{"jquery":1}],3:[function(require,module,exports){
 module.exports = "<table>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<!-- \\BEGIN type:touch#th -->\n\t\t<th<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 -->>\\{value\\}</th>\n\t\t<!-- \\END type:touch#th -->\n\t\t<!-- \\BEGIN type:touch#td -->\n\t\t<td<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 -->>\\{value\\}</td>\n\t\t<!-- \\END type:touch#td -->\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>";
 
@@ -10843,7 +10843,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		return this.data.row[b].col[a];
 	},
 	hitTest:function(point1,point2){
-		if((point1.x < point2.x + point2.width) 
+		if((point1.x < point2.x + point2.width)
 		&& (point2.x < point1.x + point1.width)
 		&& (point1.y < point2.y + point2.height)
 		&& (point2.y < point1.y + point1.height)){
@@ -10931,26 +10931,27 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 	getTable:function(){
 		return this.getHtml(returnTable,true);
 	},
+	onUpdated:function(){
+		var points = this.getAllPoints();
+		var point = this.getLargePoint.apply(null,points);
+		var width = point.width;
+		$(".js-table-header th:gt("+width+")","[data-id='"+this.id+"']").remove();
+		if(this.afterRendered){
+			this.afterRendered();
+		}
+	},
 	data:{
 		highestRow:function(){
-			var high = 0;
-			var index = 0;
-			var i = 0;
-			var cols = [];
-			this.data.row.forEach(function(item){
-				if(item.col.length >= high){
-					high = item.col.length;
-					index = i;
-				}
-				i++;
+			var arr = [];
+			this.data.row.forEach(function(item,i){
+				item.col.forEach(function(obj,t){
+					var length = parseInt(obj.colspan);
+					for (var i = 0; i < length; i++){
+						arr.push(i);
+					}
+				});
 			});
-			this.data.row[index].col.forEach(function(item){
-				var length = parseInt(item.colspan);
-				for(var i = 0; i < length; i++){
-					cols.push({});
-				}
-			});
-			return cols;
+			return arr;
 		}
 	},
 	method:{
