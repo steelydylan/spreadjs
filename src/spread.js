@@ -220,7 +220,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 	},
 	insertCellAt: function(a,b,item) {
 		if(this.data.row[a]){
-	    	this.data.row[a].col.splice(b+1,0,item);
+	    	this.data.row[a].col.splice(b,0,item);
 		}
 	},
 	data:{
@@ -238,6 +238,15 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		}
 	},
 	method:{
+		selectRow:function(i){
+			if(this.e.type != "click"){
+				return;
+			}
+			var $target = $(this.e.target);
+			var height = $target.parents(".spread-table").height();
+			var width = $target.width();
+			// var offset
+		},
 		updateTable:function(b,a){
 			a = parseInt(a);
 			b = parseInt(b);
@@ -270,10 +279,43 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				this.data.row[a].col[b].value = $(this.e.target).text();
 			}
 		},
+		addBottomCells:function(){
+			if(this.e.type != "click"){
+				return;
+			}
+			var self = this;
+			var points = this.getAllPoints();
+			var point1 = this.getLargePoint.apply(null,points);
+			var selectedPoints = this.getSelectedPoints();
+			var point2 = this.getLargePoint.apply(null,selectedPoints);
+			var newpoint = {x:0,y:point2.y+point2.height-1,width:point1.width,height:1};
+			var targetPoints = [];
+			self.data.showMenu = false;
+			points.forEach(function(point){
+				if(self.hitTest(newpoint,point)){
+					targetPoints.push(point);
+				}
+			});
+			targetPoints.forEach(function(point){
+				var index = self.getCellIndexByPos(point.x,point.y);
+				var cell = self.getCellByPos(point.x,point.y);
+				var newcell = {type:"td",colspan:1,rowspan:1,value:""};
+				if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
+					if(point.height + point.y - newpoint.y > 1){
+						cell.rowspan = parseInt(cell.rowspan) + 1;
+						cell.rowspan += "";
+					}else{
+						self.insertCellAt(index.row,index.col,newcell)
+					}
+				}
+			});
+			this.update();
+		},
 		addRightCells:function(){
 			if(this.e.type != "click"){
 				return;
 			}
+			this.data.showMenu = false;
 			var self = this;
 			var points = this.getAllPoints();
 			var point1 = this.getLargePoint.apply(null,points);
@@ -295,12 +337,58 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 						cell.colspan = parseInt(cell.colspan) + 1;
 						cell.colspan += "";
 					}else{
-						self.insertCellAt(index.row,index.col,newcell)
+						self.insertCellAt(index.row,index.col+1,newcell)
 					}
 				}
 			});
-			this.data.showMenu = false;
 			this.update();
+		},
+		addLeftCells:function(){
+			if(this.e.type != "click"){
+				return;
+			}
+			this.data.showMenu = false;
+			var self = this;
+			var points = this.getAllPoints();
+			var point1 = this.getLargePoint.apply(null,points);
+			var selectedPoints = this.getSelectedPoints();
+			var point2 = this.getLargePoint.apply(null,selectedPoints);
+			var newpoint = {x:point2.x+point2.width-2,y:0,width:1,height:point1.height};
+			var targetPoints = [];
+			points.forEach(function(point){
+				if(self.hitTest(newpoint,point)){
+					targetPoints.push(point);
+				}
+			});
+			if(targetPoints.length == 0){
+				var length = point1.height;
+				for(var i = 0; i < length; i++){
+					var newcell = {type:"td",colspan:1,rowspan:1,value:""};
+					self.insertCellAt(i,0,newcell);
+				}
+				self.update();
+				return;
+			}
+			targetPoints.forEach(function(point){
+				var index = self.getCellIndexByPos(point.x,point.y);
+				var cell = self.getCellByPos(point.x,point.y);
+				var newcell = {type:"td",colspan:1,rowspan:1,value:""};
+				if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
+					if(point.width + point.x - newpoint.x > 1){
+						cell.colspan = parseInt(cell.colspan) + 1;
+						cell.colspan += "";
+					}else{
+						self.insertCellAt(index.row,index.col+1,newcell);
+					}
+				}
+			});
+			this.update();
+		},
+		addBottomCells:function(){
+			if(this.e.type != "click"){
+				return;
+			}
+
 		},
 		mergeCell:function(){
 			if(this.e.type != "click"){

@@ -2,7 +2,7 @@
 	<tr class="spread-table-header js-table-header">
 		<th></th>
 		<!-- BEGIN highestRow:loop -->
-		<th data-action="selectRow">{i}[noToEn]</th>
+		<th data-action="selectRow({i})">{i}[noToEn]</th>
 		<!-- END highestRow:loop -->
 	</tr>
 	<!-- BEGIN row:loop -->
@@ -19,6 +19,10 @@
 	<li data-action="mergeCell">セルの結合</li>
 	<li data-action="makeTh">thに設定する</li>
 	<li data-action="makeTd">tdに設定する</li>
-	<li data-action="addRightCells">右に行を追加</li>
+	<li data-action="addRightCells">右に列を追加</li>
+	<li data-action="addLeftCells">左に列を追加</li>
+	<li data-action="addBottomCells">下に行を追加</li>
 </ul>
 <!-- END showMenu:exist -->
+<!-- BEGIN selectArea:exist -->
+<!-- END selectArea:exist -->
