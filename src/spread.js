@@ -218,6 +218,10 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			this.afterRendered();
 		}
 	},
+	//行の追加
+	insertRow: function(a,item){
+
+	},
 	insertCellAt: function(a,b,item) {
 		if(this.data.row[a]){
 	    	this.data.row[a].col.splice(b,0,item);
@@ -388,7 +392,33 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			if(this.e.type != "click"){
 				return;
 			}
-
+			this.data.showMenu = false;
+			var self = this;
+			var points = this.getAllPoints();
+			var point1 = this.getLargePoint.apply(null,points);
+			var selectedPoints = this.getSelectedPoints();
+			var point2 = this.getLargePoint.apply(null,selectedPoints);
+			var newpoint = {x:0,y:point2.y+point2.height-1,width:point1.width,height:1};
+			var targetPoints = [];
+			points.forEach(function(point){
+				if(self.hitTest(newpoint,point)){
+					targetPoints.push(point);
+				}
+			});
+			targetPoints.forEach(function(point){
+				var index = self.getCellIndexByPos(point.x,point.y);
+				var cell = self.getCellByPos(point.x,point.y);
+				var newcell = {type:"td",colspan:1,rowspan:1,value:""};
+				if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
+					if(point.height + point.y - newpoint.y > 1){
+						cell.rowspan = parseInt(cell.rowspan) + 1;
+						cell.rowspan += "";
+					}else{
+						self.insertCellAt(index.row+1,index.col,newcell)
+					}
+				}
+			});
+			this.update();
 		},
 		mergeCell:function(){
 			if(this.e.type != "click"){
