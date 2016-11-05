@@ -11152,11 +11152,14 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				}
 				var newcell = {type:"td",colspan:1,rowspan:1,value:""};
 				if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
-					if (index.row == point2.y+1) {
-						newRow.push({type:"td",colspan:1,rowspan:1,value:""});
-					} else if (point.height + point.y - newpoint.y > 1) {
+					if (point.height > 1) {
 						cell.rowspan = parseInt(cell.rowspan) + 1;
 						cell.rowspan += "";
+					} else if (index.row == point2.y+1) {
+						var length = parseInt(cell.colspan);
+						for(var i = 0; i < length; i++){
+							newRow.push({type:"td",colspan:1,rowspan:1,value:""});
+						}
 					} else {
 						self.insertCellAt(index.row+1,index.col,newcell);
 					}
