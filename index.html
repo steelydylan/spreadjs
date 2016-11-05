@@ -36,7 +36,10 @@
 	<script>
 		var spread = new Spread(".table");
 		spread.afterRendered = function(){
-			document.querySelector(".test").innerText = spread.getTable();
+			document.querySelector(".test").innerText = this.getTable();
+		}
+		spread.afterEntered = function(){
+			document.querySelector(".test").innerText = this.getTable();
 		}
 		spread.afterRendered();
 	</script>

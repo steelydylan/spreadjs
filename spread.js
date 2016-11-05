@@ -11037,7 +11037,10 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				this.mousedown = false;
 				this.contextmenu();
 			}else{
-				this.data.row[a].col[b].value = $(this.e.target).text();
+				this.data.row[a].col[b].value = $(this.e.target).html();
+				if(this.afterEntered){
+					this.afterEntered();
+				}
 			}
 		},
 		addBottomCells:function(){
@@ -11161,6 +11164,11 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			var newpoint = {x:0,y:point2.y+point2.height,width:point1.width,height:1};
 			var targetPoints = [];
 			var newRow = [];
+			points.forEach(function(point){
+				if(self.hitTest(newpoint,point)){
+					targetPoints.push(point);
+				}
+			});
 			if(targetPoints.length == 0){
 				var length = point1.width;
 				for(var i = 0; i < length; i++){
@@ -11171,11 +11179,6 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				self.update();
 				return;
 			}
-			points.forEach(function(point){
-				if(self.hitTest(newpoint,point)){
-					targetPoints.push(point);
-				}
-			});
 			targetPoints.forEach(function(point){
 				var index = self.getCellIndexByPos(point.x,point.y);
 				var cell = self.getCellByPos(point.x,point.y);
@@ -11184,13 +11187,13 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				}
 				var newcell = {type:"td",colspan:1,rowspan:1,value:""};
 				if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
-					if(point.height + point.y - newpoint.y > 1){
+					if (index.row == point2.y+1) {
+						newRow.push({type:"td",colspan:1,rowspan:1,value:""});
+					} else if (point.height + point.y - newpoint.y > 1) {
 						cell.rowspan = parseInt(cell.rowspan) + 1;
 						cell.rowspan += "";
-					}else if (index.row == point2.y+1){
-						newRow.push({type:"td",colspan:1,rowspan:1,value:""});
-					}else{
-						self.insertCellAt(index.row,index.col,newcell);
+					} else {
+						self.insertCellAt(index.row+1,index.col,newcell);
 					}
 				}
 			});
