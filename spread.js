@@ -11043,41 +11043,6 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				}
 			}
 		},
-		addBottomCells:function(){
-			if(this.e.type != "click"){
-				return;
-			}
-			var self = this;
-			var points = this.getAllPoints();
-			var point1 = this.getLargePoint.apply(null,points);
-			var selectedPoints = this.getSelectedPoints();
-			var point2 = this.getLargePoint.apply(null,selectedPoints);
-			var newpoint = {x:0,y:point2.y+point2.height-1,width:point1.width,height:1};
-			var targetPoints = [];
-			self.data.showMenu = false;
-			points.forEach(function(point){
-				if(self.hitTest(newpoint,point)){
-					targetPoints.push(point);
-				}
-			});
-			targetPoints.forEach(function(point){
-				var index = self.getCellIndexByPos(point.x,point.y);
-				var cell = self.getCellByPos(point.x,point.y);
-				if(!cell){
-					return false;
-				}
-				var newcell = {type:"td",colspan:1,rowspan:1,value:""};
-				if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
-					if(point.height + point.y - newpoint.y > 1){
-						cell.rowspan = parseInt(cell.rowspan) + 1;
-						cell.rowspan += "";
-					}else{
-						self.insertCellAt(index.row,index.col,newcell)
-					}
-				}
-			});
-			this.update();
-		},
 		addRightCells:function(){
 			if(this.e.type != "click"){
 				return;
