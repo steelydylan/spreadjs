@@ -279,6 +279,358 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 	    	this.data.row[a].col.splice(b,0,item);
 		}
 	},
+	selectRow:function(i){
+		this.unselectCells();
+		this.data.showMenu = false;
+		if(this.e.type == "contextmenu"){
+			this.contextmenu();
+		} else if(this.e.type != "click"){
+			return;
+		}
+		this.data.mode = "col";
+		this.data.selectedColNo = -1;
+		this.data.selectedRowNo = i;
+		this.update();
+	},
+	selectCol:function(i){
+		this.unselectCells();
+		this.data.showMenu = false;
+		if(this.e.type == "contextmenu"){
+			this.contextmenu();
+		} else if(this.e.type != "click"){
+			return;
+		}
+		this.data.mode = "row";
+		this.data.selectedRowNo = -1;
+		this.data.selectedColNo = i;
+		this.update();
+	},
+	removeCol:function(selectedno){
+		if(this.e.type != "click"){
+			return;
+		}
+		this.data.showMenu = false;
+		var self = this;
+		var points = this.getAllPoints();
+		var point1 = this.getLargePoint.apply(null,points);
+		var newpoint = {x:parseInt(selectedno),y:0,width:1,height:point1.height};
+		var targetPoints = [];
+		points.forEach(function(point){
+			if(self.hitTest(newpoint,point)){
+				targetPoints.push(point);
+			}
+		});
+		targetPoints.forEach(function(point){
+			var index = self.getCellIndexByPos(point.x,point.y);
+			var cell = self.getCellByPos(point.x,point.y);
+			if(cell.colspan == 1){
+				self.removeCell(cell);
+			}else{
+				cell.colspan = parseInt(cell.colspan) - 1;
+			}
+		});
+		this.update();
+	},
+	removeRow:function(selectedno){
+		if(this.e.type != "click"){
+			return;
+		}
+		this.data.showMenu = false;
+		var self = this;
+		var points = this.getAllPoints();
+		var point1 = this.getLargePoint.apply(null,points);
+		selectedno = parseInt(selectedno);
+		var newpoint = {x:0,y:selectedno,width:point1.width,height:1};
+		var targetPoints = [];
+		var removeCells = [];
+		points.forEach(function(point){
+			if(self.hitTest(newpoint,point)){
+				targetPoints.push(point);
+			}
+		});
+		targetPoints.forEach(function(point){
+			var cell = self.getCellByPos(point.x,point.y);
+			if(cell.rowspan == 1){
+				removeCells.push(cell);
+			}else{
+				cell.rowspan = parseInt(cell.rowspan) - 1;
+			}
+		});
+		removeCells.forEach(function(cell){
+			self.removeCell(cell);
+		});
+		this.data.row.splice(selectedno,1);
+		this.update();
+	},
+	updateTable:function(b,a){
+		a = parseInt(a);
+		b = parseInt(b);
+		this.data.mode = "cell";
+		this.data.selectedRowNo = -1;
+		this.data.selectedColNo = -1;
+		this.data.showMenu = false;
+		if(this.e.type == "click"){
+			if(this.e.shiftKey){
+				this.selectRange(a,b);
+			}
+		}else if(this.e.type == "mousedown"){
+			if(this.e.button !== 2){
+				this.mousedown = true;
+				if(!this.data.row[a].col[b].selected){
+					this.select(a,b);
+					this.update();
+				}else{
+					this.select(a,b);
+				}
+			}
+		}else if(this.e.type == "mousemove"){
+			if(this.mousedown){
+				this.selectRange(a,b);
+			}
+		}else if(this.e.type == "mouseup"){
+			this.mousedown = false;
+			this.selectRange(a,b);
+		}else if(this.e.type == "contextmenu"){
+			this.mousedown = false;
+			this.contextmenu();
+		}else{
+			this.data.row[a].col[b].value = $(this.e.target).html();
+			if(this.afterEntered){
+				this.afterEntered();
+			}
+		}
+	},
+	addRightCells:function(selectedno){
+		if(this.e.type != "click"){
+			return;
+		}
+		this.data.showMenu = false;
+		var self = this;
+		var points = this.getAllPoints();
+		var point1 = this.getLargePoint.apply(null,points);
+		var newpoint = {x:parseInt(selectedno),y:0,width:1,height:point1.height};
+		var targetPoints = [];
+		points.forEach(function(point){
+			if(self.hitTest(newpoint,point)){
+				targetPoints.push(point);
+			}
+		});
+		targetPoints.forEach(function(point){
+			var index = self.getCellIndexByPos(point.x,point.y);
+			var cell = self.getCellByPos(point.x,point.y);
+			var newcell = {type:"td",colspan:1,rowspan:cell.rowspan,value:""};
+			if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
+				if(point.width + point.x - newpoint.x > 1){
+					cell.colspan = parseInt(cell.colspan) + 1;
+					cell.colspan += "";
+				}else{
+					self.insertCellAt(index.row,index.col+1,newcell)
+				}
+			}
+		});
+		this.update();
+	},
+	addLeftCells:function(selectedno){
+		if(this.e.type != "click"){
+			return;
+		}
+		this.data.selectedRowNo = parseInt(this.data.selectedRowNo)+1;
+		this.data.showMenu = false;
+		var self = this;
+		var points = this.getAllPoints();
+		var point1 = this.getLargePoint.apply(null,points);
+		var newpoint = {x:parseInt(selectedno)-1,y:0,width:1,height:point1.height};
+		var targetPoints = [];
+		points.forEach(function(point){
+			if(self.hitTest(newpoint,point)){
+				targetPoints.push(point);
+			}
+		});
+		if(selectedno == 0){
+			var length = point1.height;
+			for(var i = 0; i < length; i++){
+				var newcell = {type:"td",colspan:1,rowspan:1,value:""};
+				self.insertCellAt(i,0,newcell);
+			}
+			self.update();
+			return;
+		}
+		targetPoints.forEach(function(point){
+			var index = self.getCellIndexByPos(point.x,point.y);
+			var cell = self.getCellByPos(point.x,point.y);
+			var newcell = {type:"td",colspan:1,rowspan:cell.rowspan,value:""};
+			if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
+				if(point.width + point.x - newpoint.x > 1){
+					cell.colspan = parseInt(cell.colspan) + 1;
+					cell.colspan += "";
+				}else{
+					self.insertCellAt(index.row,index.col+1,newcell);
+				}
+			}
+		});
+		this.update();
+	},
+	addBottomCells:function(selectedno){
+		if(this.e.type != "click"){
+			return;
+		}
+		this.data.showMenu = false;
+		var self = this;
+		var points = this.getAllPoints();
+		var point1 = this.getLargePoint.apply(null,points);
+		selectedno = parseInt(selectedno);
+		var newpoint = {x:0,y:selectedno+1,width:point1.width,height:1};
+		var targetPoints = [];
+		var newRow = [];
+		points.forEach(function(point){
+			if(self.hitTest(newpoint,point)){
+				targetPoints.push(point);
+			}
+		});
+		if(targetPoints.length == 0){
+			var length = point1.width;
+			for(var i = 0; i < length; i++){
+				var newcell = {type:"td",colspan:1,rowspan:1,value:""};
+				newRow.push(newcell);
+			}
+			self.insertRow(selectedno+1,newRow);
+			self.update();
+			return;
+		}
+		targetPoints.forEach(function(point){
+			var index = self.getCellIndexByPos(point.x,point.y);
+			var cell = self.getCellByPos(point.x,point.y);
+			if(!cell){
+				return;
+			}
+			var newcell = {type:"td",colspan:1,rowspan:1,value:""};
+			if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
+				if (point.height > 1) {
+					cell.rowspan = parseInt(cell.rowspan) + 1;
+					cell.rowspan += "";
+				} else if (index.row == selectedno+1) {
+					var length = parseInt(cell.colspan);
+					for(var i = 0; i < length; i++){
+						newRow.push({type:"td",colspan:1,rowspan:1,value:""});
+					}
+				} else {
+					self.insertCellAt(index.row+1,index.col,newcell);
+				}
+			}
+		});
+		this.insertRow(selectedno+1,newRow);
+		this.update();
+	},
+	addTopCells:function(selectedno){
+		if(this.e.type != "click"){
+			return;
+		}
+		this.data.showMenu = false;
+		this.data.selectedColNo = parseInt(this.data.selectedColNo)+1;
+		var self = this;
+		var points = this.getAllPoints();
+		var point1 = this.getLargePoint.apply(null,points);
+		selectedno = parseInt(selectedno);
+		var newpoint = {x:0,y:selectedno-1,width:point1.width,height:1};
+		var targetPoints = [];
+		var newRow = [];
+		points.forEach(function(point){
+			if(self.hitTest(newpoint,point)){
+				targetPoints.push(point);
+			}
+		});
+		if(selectedno == 0){
+			var length = point1.width;
+			for(var i = 0; i < length; i++){
+				var newcell = {type:"td",colspan:1,rowspan:1,value:""};
+				newRow.push(newcell);
+			}
+			self.insertRow(0,newRow);
+			self.update();
+			return;
+		}
+		targetPoints.forEach(function(point){
+			var index = self.getCellIndexByPos(point.x,point.y);
+			var cell = self.getCellByPos(point.x,point.y);
+			if(!cell){
+				return;
+			}
+			var newcell = {type:"td",colspan:1,rowspan:1,value:""};
+			if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
+				if (point.height > 1) {
+					cell.rowspan = parseInt(cell.rowspan) + 1;
+					cell.rowspan += "";
+				} else if (index.row == selectedno-1) {
+					var length = parseInt(cell.colspan);
+					for(var i = 0; i < length; i++){
+						newRow.push({type:"td",colspan:1,rowspan:1,value:""});
+					}
+				} else {
+					self.insertCellAt(index.row,index.col,newcell);
+				}
+			}
+		});
+		this.insertRow(selectedno,newRow);
+		this.update();
+	},
+	mergeCell:function(){
+		if(this.e.type != "click"){
+			return;
+		}
+		var points = this.getSelectedPoints();
+		var point = this.getLargePoint.apply(null,points);
+		var cell = this.getCellByPos(point.x,point.y);
+		this.removeSelectedCellExcept(cell);
+		cell.colspan = point.width;
+		cell.rowspan = point.height;
+		this.data.showMenu = false;
+		this.update();
+	},
+	splitCell:function(){
+
+	},
+	makeTh:function(){
+		if(this.e.type != "click"){
+			return;
+		}
+		this.data.row.forEach(function(item,i){
+			item.col.forEach(function(obj,t){
+				if(obj.selected){
+					obj.type = "th";
+				}
+			});
+		});
+		this.data.showMenu = false;
+		this.update();
+	},
+	makeTd:function(){
+		if(this.e.type != "click"){
+			return;
+		}
+		this.data.row.forEach(function(item,i){
+			item.col.forEach(function(obj,t){
+				if(obj.selected){
+					obj.type = "td";
+				}
+			});
+		});
+		this.data.showMenu = false;
+		this.update();
+	},
+	align:function(align){
+		if(this.e.type != "click"){
+			return;
+		}
+		this.data.row.forEach(function(item,i){
+			item.col.forEach(function(obj,t){
+				if(obj.selected){
+					obj.align = align;
+				}
+			});
+		});
+		this.data.showMenu = false;
+		this.update();
+	},
 	data:{
 		highestRow:function(){
 			var arr = [];
@@ -294,363 +646,6 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				});
 			});
 			return arr;
-		}
-	},
-	method:{
-		selectRow:function(i){
-			this.unselectCells();
-			this.data.showMenu = false;
-			if(this.e.type == "contextmenu"){
-				this.contextmenu();
-			} else if(this.e.type != "click"){
-				return;
-			}
-			this.data.mode = "col";
-			this.data.selectedColNo = -1;
-			this.data.selectedRowNo = i;
-			this.update();
-		},
-		selectCol:function(i){
-			this.unselectCells();
-			this.data.showMenu = false;
-			if(this.e.type == "contextmenu"){
-				this.contextmenu();
-			} else if(this.e.type != "click"){
-				return;
-			}
-			this.data.mode = "row";
-			this.data.selectedRowNo = -1;
-			this.data.selectedColNo = i;
-			this.update();
-		},
-		removeRow:function(selectedno){
-			if(this.e.type != "click"){
-				return;
-			}
-
-		},
-		removeCol:function(selectedno){
-			if(this.e.type != "click"){
-				return;
-			}
-			this.data.showMenu = false;
-			var self = this;
-			var points = this.getAllPoints();
-			var point1 = this.getLargePoint.apply(null,points);
-			var newpoint = {x:parseInt(selectedno),y:0,width:1,height:point1.height};
-			var targetPoints = [];
-			points.forEach(function(point){
-				if(self.hitTest(newpoint,point)){
-					targetPoints.push(point);
-				}
-			});
-			targetPoints.forEach(function(point){
-				var index = self.getCellIndexByPos(point.x,point.y);
-				var cell = self.getCellByPos(point.x,point.y);
-				if(cell.colspan == 1){
-					self.removeCell(cell);
-				}else{
-					cell.colspan = parseInt(cell.colspan) - 1;
-				}
-			});
-			this.update();
-		},
-		removeRow:function(selectedno){
-			if(this.e.type != "click"){
-				return;
-			}
-			this.data.showMenu = false;
-			var self = this;
-			var points = this.getAllPoints();
-			var point1 = this.getLargePoint.apply(null,points);
-			selectedno = parseInt(selectedno);
-			var newpoint = {x:0,y:selectedno,width:point1.width,height:1};
-			var targetPoints = [];
-			var removeCells = [];
-			points.forEach(function(point){
-				if(self.hitTest(newpoint,point)){
-					targetPoints.push(point);
-				}
-			});
-			targetPoints.forEach(function(point){
-				var cell = self.getCellByPos(point.x,point.y);
-				if(cell.rowspan == 1){
-					removeCells.push(cell);
-				}else{
-					cell.rowspan = parseInt(cell.rowspan) - 1;
-				}
-			});
-			removeCells.forEach(function(cell){
-				self.removeCell(cell);
-			});
-			this.data.row.splice(selectedno,1);
-			this.update();
-		},
-		updateTable:function(b,a){
-			a = parseInt(a);
-			b = parseInt(b);
-			this.data.mode = "cell";
-			this.data.selectedRowNo = -1;
-			this.data.selectedColNo = -1;
-			this.data.showMenu = false;
-			if(this.e.type == "click"){
-				if(this.e.shiftKey){
-					this.selectRange(a,b);
-				}
-			}else if(this.e.type == "mousedown"){
-				if(this.e.button !== 2){
-					this.mousedown = true;
-					if(!this.data.row[a].col[b].selected){
-						this.select(a,b);
-						this.update();
-					}else{
-						this.select(a,b);
-					}
-				}
-			}else if(this.e.type == "mousemove"){
-				if(this.mousedown){
-					this.selectRange(a,b);
-				}
-			}else if(this.e.type == "mouseup"){
-				this.mousedown = false;
-				this.selectRange(a,b);
-			}else if(this.e.type == "contextmenu"){
-				this.mousedown = false;
-				this.contextmenu();
-			}else{
-				this.data.row[a].col[b].value = $(this.e.target).html();
-				if(this.afterEntered){
-					this.afterEntered();
-				}
-			}
-		},
-		addRightCells:function(selectedno){
-			if(this.e.type != "click"){
-				return;
-			}
-			this.data.showMenu = false;
-			var self = this;
-			var points = this.getAllPoints();
-			var point1 = this.getLargePoint.apply(null,points);
-			var newpoint = {x:parseInt(selectedno),y:0,width:1,height:point1.height};
-			var targetPoints = [];
-			points.forEach(function(point){
-				if(self.hitTest(newpoint,point)){
-					targetPoints.push(point);
-				}
-			});
-			targetPoints.forEach(function(point){
-				var index = self.getCellIndexByPos(point.x,point.y);
-				var cell = self.getCellByPos(point.x,point.y);
-				var newcell = {type:"td",colspan:1,rowspan:cell.rowspan,value:""};
-				if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
-					if(point.width + point.x - newpoint.x > 1){
-						cell.colspan = parseInt(cell.colspan) + 1;
-						cell.colspan += "";
-					}else{
-						self.insertCellAt(index.row,index.col+1,newcell)
-					}
-				}
-			});
-			this.update();
-		},
-		addLeftCells:function(selectedno){
-			if(this.e.type != "click"){
-				return;
-			}
-			this.data.selectedRowNo = parseInt(this.data.selectedRowNo)+1;
-			this.data.showMenu = false;
-			var self = this;
-			var points = this.getAllPoints();
-			var point1 = this.getLargePoint.apply(null,points);
-			var newpoint = {x:parseInt(selectedno)-1,y:0,width:1,height:point1.height};
-			var targetPoints = [];
-			points.forEach(function(point){
-				if(self.hitTest(newpoint,point)){
-					targetPoints.push(point);
-				}
-			});
-			if(selectedno == 0){
-				var length = point1.height;
-				for(var i = 0; i < length; i++){
-					var newcell = {type:"td",colspan:1,rowspan:1,value:""};
-					self.insertCellAt(i,0,newcell);
-				}
-				self.update();
-				return;
-			}
-			targetPoints.forEach(function(point){
-				var index = self.getCellIndexByPos(point.x,point.y);
-				var cell = self.getCellByPos(point.x,point.y);
-				var newcell = {type:"td",colspan:1,rowspan:cell.rowspan,value:""};
-				if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
-					if(point.width + point.x - newpoint.x > 1){
-						cell.colspan = parseInt(cell.colspan) + 1;
-						cell.colspan += "";
-					}else{
-						self.insertCellAt(index.row,index.col+1,newcell);
-					}
-				}
-			});
-			this.update();
-		},
-		addBottomCells:function(selectedno){
-			if(this.e.type != "click"){
-				return;
-			}
-			this.data.showMenu = false;
-			var self = this;
-			var points = this.getAllPoints();
-			var point1 = this.getLargePoint.apply(null,points);
-			selectedno = parseInt(selectedno);
-			var newpoint = {x:0,y:selectedno+1,width:point1.width,height:1};
-			var targetPoints = [];
-			var newRow = [];
-			points.forEach(function(point){
-				if(self.hitTest(newpoint,point)){
-					targetPoints.push(point);
-				}
-			});
-			if(targetPoints.length == 0){
-				var length = point1.width;
-				for(var i = 0; i < length; i++){
-					var newcell = {type:"td",colspan:1,rowspan:1,value:""};
-					newRow.push(newcell);
-				}
-				self.insertRow(selectedno+1,newRow);
-				self.update();
-				return;
-			}
-			targetPoints.forEach(function(point){
-				var index = self.getCellIndexByPos(point.x,point.y);
-				var cell = self.getCellByPos(point.x,point.y);
-				if(!cell){
-					return;
-				}
-				var newcell = {type:"td",colspan:1,rowspan:1,value:""};
-				if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
-					if (point.height > 1) {
-						cell.rowspan = parseInt(cell.rowspan) + 1;
-						cell.rowspan += "";
-					} else if (index.row == selectedno+1) {
-						var length = parseInt(cell.colspan);
-						for(var i = 0; i < length; i++){
-							newRow.push({type:"td",colspan:1,rowspan:1,value:""});
-						}
-					} else {
-						self.insertCellAt(index.row+1,index.col,newcell);
-					}
-				}
-			});
-			this.insertRow(selectedno+1,newRow);
-			this.update();
-		},
-		addTopCells:function(selectedno){
-			if(this.e.type != "click"){
-				return;
-			}
-			this.data.showMenu = false;
-			this.data.selectedColNo = parseInt(this.data.selectedColNo)+1;
-			var self = this;
-			var points = this.getAllPoints();
-			var point1 = this.getLargePoint.apply(null,points);
-			selectedno = parseInt(selectedno);
-			var newpoint = {x:0,y:selectedno-1,width:point1.width,height:1};
-			var targetPoints = [];
-			var newRow = [];
-			points.forEach(function(point){
-				if(self.hitTest(newpoint,point)){
-					targetPoints.push(point);
-				}
-			});
-			if(selectedno == 0){
-				var length = point1.width;
-				for(var i = 0; i < length; i++){
-					var newcell = {type:"td",colspan:1,rowspan:1,value:""};
-					newRow.push(newcell);
-				}
-				self.insertRow(0,newRow);
-				self.update();
-				return;
-			}
-			targetPoints.forEach(function(point){
-				var index = self.getCellIndexByPos(point.x,point.y);
-				var cell = self.getCellByPos(point.x,point.y);
-				if(!cell){
-					return;
-				}
-				var newcell = {type:"td",colspan:1,rowspan:1,value:""};
-				if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
-					if (point.height > 1) {
-						cell.rowspan = parseInt(cell.rowspan) + 1;
-						cell.rowspan += "";
-					} else if (index.row == selectedno-1) {
-						var length = parseInt(cell.colspan);
-						for(var i = 0; i < length; i++){
-							newRow.push({type:"td",colspan:1,rowspan:1,value:""});
-						}
-					} else {
-						self.insertCellAt(index.row,index.col,newcell);
-					}
-				}
-			});
-			this.insertRow(selectedno,newRow);
-			this.update();
-		},
-		mergeCell:function(){
-			if(this.e.type != "click"){
-				return;
-			}
-			var points = this.getSelectedPoints();
-			var point = this.getLargePoint.apply(null,points);
-			var cell = this.getCellByPos(point.x,point.y);
-			this.removeSelectedCellExcept(cell);
-			cell.colspan = point.width;
-			cell.rowspan = point.height;
-			this.data.showMenu = false;
-			this.update();
-		},
-		makeTh:function(){
-			if(this.e.type != "click"){
-				return;
-			}
-			this.data.row.forEach(function(item,i){
-				item.col.forEach(function(obj,t){
-					if(obj.selected){
-						obj.type = "th";
-					}
-				});
-			});
-			this.data.showMenu = false;
-			this.update();
-		},
-		makeTd:function(){
-			if(this.e.type != "click"){
-				return;
-			}
-			this.data.row.forEach(function(item,i){
-				item.col.forEach(function(obj,t){
-					if(obj.selected){
-						obj.type = "td";
-					}
-				});
-			});
-			this.data.showMenu = false;
-			this.update();
-		},
-		align:function(align){
-			if(this.e.type != "click"){
-				return;
-			}
-			this.data.row.forEach(function(item,i){
-				item.col.forEach(function(obj,t){
-					if(obj.selected){
-						obj.align = align;
-					}
-				});
-			});
-			this.data.showMenu = false;
-			this.update();
 		}
 	},
 	convert:{

@@ -87,8 +87,10 @@ $(document).on("input click change keydown contextmenu mouseup mousedown mousemo
 	if(id){
 		var obj = aTemplate.getObjectById(id);
 		obj.e = e;
-		if(obj.method[action]){
+		if(obj.method && obj.method[action]){
 			obj.method[action].apply(obj,pts);
+		}else if(obj[action]){
+			obj[action].apply(obj,pts);
 		}
 	}
 });
@@ -407,7 +409,7 @@ aTemplate.View = aTemplate.createClass({
 		var html = this.getHtml();
 		var templates = this.templates;
 		var renderWay = txt || "html";
-		if(this.method.beforeUpdated){
+		if(this.method && this.method.beforeUpdated){
 			this.applyMethod("beforeUpdated");
 		}
 		for(var i = 0,n = templates.length; i < n; i++){
