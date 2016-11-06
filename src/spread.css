@@ -41,6 +41,18 @@
 	font-weight: normal;
 }
 
+.spread-table .left{
+	text-align: left;
+}
+
+.spread-table .right{
+	text-align: right;
+}
+
+.spread-table .center{
+	text-align: center;
+}
+
 .spread-table .spread-table-th {
 	background-color: #ddd;
 	font-weight: bold;

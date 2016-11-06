@@ -554,6 +554,20 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			});
 			this.data.showMenu = false;
 			this.update();
+		},
+		align:function(align){
+			if(this.e.type != "click"){
+				return;
+			}
+			this.data.row.forEach(function(item,i){
+				item.col.forEach(function(obj,t){
+					if(obj.selected){
+						obj.align = align;
+					}
+				});
+			});
+			this.data.showMenu = false;
+			this.update();
 		}
 	},
 	convert:{
