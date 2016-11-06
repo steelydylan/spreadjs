@@ -379,6 +379,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			removeCells.forEach(function(cell){
 				self.removeCell(cell);
 			});
+			
 			this.update();
 		},
 		updateTable:function(b,a){
