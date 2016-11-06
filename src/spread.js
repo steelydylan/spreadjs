@@ -379,7 +379,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			removeCells.forEach(function(cell){
 				self.removeCell(cell);
 			});
-			
+
 			this.update();
 		},
 		updateTable:function(b,a){
@@ -454,6 +454,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			if(this.e.type != "click"){
 				return;
 			}
+			this.data.selectedRowNo = parseInt(this.data.selectedRowNo)+1;
 			this.data.showMenu = false;
 			var self = this;
 			var points = this.getAllPoints();
@@ -545,6 +546,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				return;
 			}
 			this.data.showMenu = false;
+			this.data.selectedColNo = parseInt(this.data.selectedColNo)+1;
 			var self = this;
 			var points = this.getAllPoints();
 			var point1 = this.getLargePoint.apply(null,points);
