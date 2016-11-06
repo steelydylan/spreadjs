@@ -2,12 +2,12 @@
 	<tr class="spread-table-header js-table-header">
 		<th></th>
 		<!-- BEGIN highestRow:loop -->
-		<th data-action="selectRow({i})">{i}[noToEn]</th>
+		<th data-action="selectRow({i})"<!-- \BEGIN selectedRowNo:touch#{i} -->class="selected"<!-- \END selectedRowNo:touch#{i} -->>{i}[noToEn]</th>
 		<!-- END highestRow:loop -->
 	</tr>
 	<!-- BEGIN row:loop -->
 	<tr>
-		<th class="spread-table-side js-table-side">{i}</th>
+		<th class="spread-table-side js-table-side<!-- \BEGIN selectedColNo:touch#{i} --> selected<!-- \END selectedColNo:touch#{i} -->"data-action="selectCol({i})">{i}</th>
 		<!-- \BEGIN row.{i}.col:loop -->
 		<td colspan="\{colspan\}" rowspan="\{rowspan\}" data-action="updateTable(\{i\},{i})" data-cell-id="\{i\}-{i}" class="<!-- \BEGIN selected:exist -->spread-table-selected<!-- \END selected:exist --><!-- \BEGIN type:touch#th --> spread-table-th<!-- END \type:touch#th -->"><div class='spread-table-editable' contenteditable>\{value\}</div><div class='spread-table-pseudo'></div></td>
 		<!-- \END row.{i}.col:loop -->
@@ -16,13 +16,19 @@
 </table>
 <!-- BEGIN showMenu:exist -->
 <ul class="spread-table-menu" style="top:{menuY}px;left:{menuX}px;">
+	<!-- BEGIN mode:touch#cell -->
 	<li data-action="mergeCell">セルの結合</li>
 	<li data-action="makeTh">thに設定する</li>
 	<li data-action="makeTd">tdに設定する</li>
-	<li data-action="addRightCells">右に列を追加</li>
-	<li data-action="addLeftCells">左に列を追加</li>
-	<li data-action="addBottomCells">下に行を追加</li>
-	<li data-action="addTopCells">上に行を追加</li>
+	<!-- END mode:touch#cell -->
+	<!-- BEGIN mode:touch#col -->
+	<li data-action="addRightCells({selectedRowNo})">右に列を追加</li>
+	<li data-action="addLeftCells({selectedRowNo})">左に列を追加</li>
+	<!-- END mode:touch#col -->
+	<!-- BEGIN mode:touch#row -->
+	<li data-action="addBottomCells({selectedColNo})">下に行を追加</li>
+	<li data-action="addTopCells({selectedColNo})">上に行を追加</li>
+	<!-- END mode:touch#row -->
 </ul>
 <!-- END showMenu:exist -->
 <!-- BEGIN selectArea:exist -->

@@ -13,6 +13,8 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		this.addTemplate(template,this.id);
 		this.inherit();
 		this.data.point = {x:-1,y:-1};
+		this.data.selectedRowNo = -1;
+		this.data.selectedColNo = -1;
 		this.data.row = this.parse($(ele).html());
 		$(ele).remove();
 		this.update();
@@ -181,6 +183,16 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			this.data.row[a].col[b].selected = true;
 		}
 	},
+	unselectCells:function(){
+		this.data.row.forEach(function(item,i){
+			if(!item || !item.col){
+				return false;
+			}
+			item.col.forEach(function(obj,t){
+				obj.selected = false;
+			});
+		});
+	},
 	removeSelectedCellExcept:function(cell){
 		var row = this.data.row;
 		for(var i = 0, n = row.length; i < n; i++){
@@ -268,17 +280,37 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 	},
 	method:{
 		selectRow:function(i){
-			if(this.e.type != "click"){
+			this.unselectCells();
+			this.data.showMenu = false;
+			if(this.e.type == "contextmenu"){
+				this.contextmenu();
+			} else if(this.e.type != "click"){
 				return;
 			}
-			var $target = $(this.e.target);
-			var height = $target.parents(".spread-table").height();
-			var width = $target.width();
-			// var offset
+			this.data.mode = "col";
+			this.data.selectedColNo = -1;
+			this.data.selectedRowNo = i;
+			this.update();
+		},
+		selectCol:function(i){
+			this.unselectCells();
+			this.data.showMenu = false;
+			if(this.e.type == "contextmenu"){
+				this.contextmenu();
+			} else if(this.e.type != "click"){
+				return;
+			}
+			this.data.mode = "row";
+			this.data.selectedRowNo = -1;
+			this.data.selectedColNo = i;
+			this.update();
 		},
 		updateTable:function(b,a){
 			a = parseInt(a);
 			b = parseInt(b);
+			this.data.mode = "cell";
+			this.data.selectedRowNo = -1;
+			this.data.selectedColNo = -1;
 			if(this.e.type == "click"){
 				this.data.showMenu = false;
 				if(this.e.shiftKey){
@@ -311,7 +343,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				}
 			}
 		},
-		addRightCells:function(){
+		addRightCells:function(selectedno){
 			if(this.e.type != "click"){
 				return;
 			}
@@ -319,9 +351,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			var self = this;
 			var points = this.getAllPoints();
 			var point1 = this.getLargePoint.apply(null,points);
-			var selectedPoints = this.getSelectedPoints();
-			var point2 = this.getLargePoint.apply(null,selectedPoints);
-			var newpoint = {x:point2.x+point2.width-1,y:0,width:1,height:point1.height};
+			var newpoint = {x:parseInt(selectedno),y:0,width:1,height:point1.height};
 			var targetPoints = [];
 			points.forEach(function(point){
 				if(self.hitTest(newpoint,point)){
@@ -343,7 +373,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			});
 			this.update();
 		},
-		addLeftCells:function(){
+		addLeftCells:function(selectedno){
 			if(this.e.type != "click"){
 				return;
 			}
@@ -351,16 +381,14 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			var self = this;
 			var points = this.getAllPoints();
 			var point1 = this.getLargePoint.apply(null,points);
-			var selectedPoints = this.getSelectedPoints();
-			var point2 = this.getLargePoint.apply(null,selectedPoints);
-			var newpoint = {x:point2.x+point2.width-2,y:0,width:1,height:point1.height};
+			var newpoint = {x:parseInt(selectedno)-1,y:0,width:1,height:point1.height};
 			var targetPoints = [];
 			points.forEach(function(point){
 				if(self.hitTest(newpoint,point)){
 					targetPoints.push(point);
 				}
 			});
-			if(targetPoints.length == 0){
+			if(selectedno == 0){
 				var length = point1.height;
 				for(var i = 0; i < length; i++){
 					var newcell = {type:"td",colspan:1,rowspan:1,value:""};
@@ -384,7 +412,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			});
 			this.update();
 		},
-		addBottomCells:function(){
+		addBottomCells:function(selectedno){
 			if(this.e.type != "click"){
 				return;
 			}
@@ -392,9 +420,8 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			var self = this;
 			var points = this.getAllPoints();
 			var point1 = this.getLargePoint.apply(null,points);
-			var selectedPoints = this.getSelectedPoints();
-			var point2 = this.getLargePoint.apply(null,selectedPoints);
-			var newpoint = {x:0,y:point2.y+point2.height,width:point1.width,height:1};
+			selectedno = parseInt(selectedno);
+			var newpoint = {x:0,y:selectedno+1,width:point1.width,height:1};
 			var targetPoints = [];
 			var newRow = [];
 			points.forEach(function(point){
@@ -408,7 +435,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 					var newcell = {type:"td",colspan:1,rowspan:1,value:""};
 					newRow.push(newcell);
 				}
-				self.insertRow(point2.y+1,newRow);
+				self.insertRow(selectedno+1,newRow);
 				self.update();
 				return;
 			}
@@ -423,7 +450,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 					if (point.height > 1) {
 						cell.rowspan = parseInt(cell.rowspan) + 1;
 						cell.rowspan += "";
-					} else if (index.row == point2.y+1) {
+					} else if (index.row == selectedno+1) {
 						var length = parseInt(cell.colspan);
 						for(var i = 0; i < length; i++){
 							newRow.push({type:"td",colspan:1,rowspan:1,value:""});
@@ -433,10 +460,10 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 					}
 				}
 			});
-			this.insertRow(point2.y+1,newRow);
+			this.insertRow(selectedno+1,newRow);
 			this.update();
 		},
-		addTopCells:function(){
+		addTopCells:function(selectedno){
 			if(this.e.type != "click"){
 				return;
 			}
@@ -444,9 +471,8 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			var self = this;
 			var points = this.getAllPoints();
 			var point1 = this.getLargePoint.apply(null,points);
-			var selectedPoints = this.getSelectedPoints();
-			var point2 = this.getLargePoint.apply(null,selectedPoints);
-			var newpoint = {x:0,y:point2.y+point2.height-1,width:point1.width,height:1};
+			selectedno = parseInt(selectedno);
+			var newpoint = {x:0,y:selectedno,width:point1.width,height:1};
 			var targetPoints = [];
 			var newRow = [];
 			points.forEach(function(point){
@@ -454,7 +480,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 					targetPoints.push(point);
 				}
 			});
-			if(point2.y == 0){
+			if(selectedno == 0){
 				var length = point1.width;
 				for(var i = 0; i < length; i++){
 					var newcell = {type:"td",colspan:1,rowspan:1,value:""};
@@ -464,7 +490,6 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				self.update();
 				return;
 			}
-			console.log(targetPoints);
 			targetPoints.forEach(function(point){
 				var index = self.getCellIndexByPos(point.x,point.y);
 				var cell = self.getCellByPos(point.x,point.y);
@@ -476,7 +501,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 					if (point.height > 1) {
 						cell.rowspan = parseInt(cell.rowspan) + 1;
 						cell.rowspan += "";
-					} else if (index.row == point2.y) {
+					} else if (index.row == selectedno) {
 						var length = parseInt(cell.colspan);
 						for(var i = 0; i < length; i++){
 							newRow.push({type:"td",colspan:1,rowspan:1,value:""});
@@ -486,7 +511,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 					}
 				}
 			});
-			this.insertRow(point2.y,newRow);
+			this.insertRow(selectedno,newRow);
 			this.update();
 		},
 		mergeCell:function(){

@@ -92,6 +92,15 @@
 	text-align: center;
 }
 
+.spread-table-header .selected{
+	background-color: #eaf2f9;
+}
+
+.spread-table-side.selected{
+	background-color: #eaf2f9;
+}
+
 .spread-table .spread-table-side {
 	text-align: center;
 }
+
