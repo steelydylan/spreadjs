@@ -472,7 +472,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			var points = this.getAllPoints();
 			var point1 = this.getLargePoint.apply(null,points);
 			selectedno = parseInt(selectedno);
-			var newpoint = {x:0,y:selectedno,width:point1.width,height:1};
+			var newpoint = {x:0,y:selectedno-1,width:point1.width,height:1};
 			var targetPoints = [];
 			var newRow = [];
 			points.forEach(function(point){
@@ -501,7 +501,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 					if (point.height > 1) {
 						cell.rowspan = parseInt(cell.rowspan) + 1;
 						cell.rowspan += "";
-					} else if (index.row == selectedno) {
+					} else if (index.row == selectedno-1) {
 						var length = parseInt(cell.colspan);
 						for(var i = 0; i < length; i++){
 							newRow.push({type:"td",colspan:1,rowspan:1,value:""});
