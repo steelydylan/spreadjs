@@ -11111,7 +11111,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			removeCells.forEach(function(cell){
 				self.removeCell(cell);
 			});
-
+			this.data.row.splice(selectedno,1);
 			this.update();
 		},
 		updateTable:function(b,a){
