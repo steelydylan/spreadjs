@@ -193,6 +193,20 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			});
 		});
 	},
+	removeCell:function(cell){
+		var row = this.data.row;
+		for(var i = 0, n = row.length; i < n; i++){
+			var col = row[i].col;
+			for(var t = 0, m = col.length; t < m; t++){
+				var obj = col[t];
+				if(obj === cell){
+					col.splice(t,1);
+					t--;
+					m--;
+				}
+			}
+		}
+	},
 	removeSelectedCellExcept:function(cell){
 		var row = this.data.row;
 		for(var i = 0, n = row.length; i < n; i++){
@@ -303,6 +317,68 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			this.data.mode = "row";
 			this.data.selectedRowNo = -1;
 			this.data.selectedColNo = i;
+			this.update();
+		},
+		removeRow:function(selectedno){
+			if(this.e.type != "click"){
+				return;
+			}
+
+		},
+		removeCol:function(selectedno){
+			if(this.e.type != "click"){
+				return;
+			}
+			this.data.showMenu = false;
+			var self = this;
+			var points = this.getAllPoints();
+			var point1 = this.getLargePoint.apply(null,points);
+			var newpoint = {x:parseInt(selectedno),y:0,width:1,height:point1.height};
+			var targetPoints = [];
+			points.forEach(function(point){
+				if(self.hitTest(newpoint,point)){
+					targetPoints.push(point);
+				}
+			});
+			targetPoints.forEach(function(point){
+				var index = self.getCellIndexByPos(point.x,point.y);
+				var cell = self.getCellByPos(point.x,point.y);
+				if(cell.colspan == 1){
+					self.removeCell(cell);
+				}else{
+					cell.colspan = parseInt(cell.colspan) - 1;
+				}
+			});
+			this.update();
+		},
+		removeRow:function(selectedno){
+			if(this.e.type != "click"){
+				return;
+			}
+			this.data.showMenu = false;
+			var self = this;
+			var points = this.getAllPoints();
+			var point1 = this.getLargePoint.apply(null,points);
+			selectedno = parseInt(selectedno);
+			var newpoint = {x:0,y:selectedno,width:point1.width,height:1};
+			var targetPoints = [];
+			var removeCells = [];
+			points.forEach(function(point){
+				if(self.hitTest(newpoint,point)){
+					targetPoints.push(point);
+				}
+			});
+			targetPoints.forEach(function(point){
+				var cell = self.getCellByPos(point.x,point.y);
+				if(cell.rowspan == 1){
+					removeCells.push(cell);
+				}else{
+					cell.rowspan = parseInt(cell.rowspan) - 1;
+				}
+			});
+			removeCells.forEach(function(cell){
+				self.removeCell(cell);
+			});
 			this.update();
 		},
 		updateTable:function(b,a){

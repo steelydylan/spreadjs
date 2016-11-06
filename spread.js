@@ -10925,6 +10925,20 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			});
 		});
 	},
+	removeCell:function(cell){
+		var row = this.data.row;
+		for(var i = 0, n = row.length; i < n; i++){
+			var col = row[i].col;
+			for(var t = 0, m = col.length; t < m; t++){
+				var obj = col[t];
+				if(obj === cell){
+					col.splice(t,1);
+					t--;
+					m--;
+				}
+			}
+		}
+	},
 	removeSelectedCellExcept:function(cell){
 		var row = this.data.row;
 		for(var i = 0, n = row.length; i < n; i++){
@@ -11035,6 +11049,68 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			this.data.mode = "row";
 			this.data.selectedRowNo = -1;
 			this.data.selectedColNo = i;
+			this.update();
+		},
+		removeRow:function(selectedno){
+			if(this.e.type != "click"){
+				return;
+			}
+
+		},
+		removeCol:function(selectedno){
+			if(this.e.type != "click"){
+				return;
+			}
+			this.data.showMenu = false;
+			var self = this;
+			var points = this.getAllPoints();
+			var point1 = this.getLargePoint.apply(null,points);
+			var newpoint = {x:parseInt(selectedno),y:0,width:1,height:point1.height};
+			var targetPoints = [];
+			points.forEach(function(point){
+				if(self.hitTest(newpoint,point)){
+					targetPoints.push(point);
+				}
+			});
+			targetPoints.forEach(function(point){
+				var index = self.getCellIndexByPos(point.x,point.y);
+				var cell = self.getCellByPos(point.x,point.y);
+				if(cell.colspan == 1){
+					self.removeCell(cell);
+				}else{
+					cell.colspan = parseInt(cell.colspan) - 1;
+				}
+			});
+			this.update();
+		},
+		removeRow:function(selectedno){
+			if(this.e.type != "click"){
+				return;
+			}
+			this.data.showMenu = false;
+			var self = this;
+			var points = this.getAllPoints();
+			var point1 = this.getLargePoint.apply(null,points);
+			selectedno = parseInt(selectedno);
+			var newpoint = {x:0,y:selectedno,width:point1.width,height:1};
+			var targetPoints = [];
+			var removeCells = [];
+			points.forEach(function(point){
+				if(self.hitTest(newpoint,point)){
+					targetPoints.push(point);
+				}
+			});
+			targetPoints.forEach(function(point){
+				var cell = self.getCellByPos(point.x,point.y);
+				if(cell.rowspan == 1){
+					removeCells.push(cell);
+				}else{
+					cell.rowspan = parseInt(cell.rowspan) - 1;
+				}
+			});
+			removeCells.forEach(function(cell){
+				self.removeCell(cell);
+			});
 			this.update();
 		},
 		updateTable:function(b,a){
@@ -11318,6 +11394,6 @@ global["Spread"] = Spread;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./aTemplate.js":2,"./return-table.html":3,"./spread.css":4,"./table.html":6,"jquery":1}],6:[function(require,module,exports){
-module.exports = "<table class=\"spread-table\">\n\t<tr class=\"spread-table-header js-table-header\">\n\t\t<th></th>\n\t\t<!-- BEGIN highestRow:loop -->\n\t\t<th data-action=\"selectRow({i})\"<!-- \\BEGIN selectedRowNo:touch#{i} -->class=\"selected\"<!-- \\END selectedRowNo:touch#{i} -->>{i}[noToEn]</th>\n\t\t<!-- END highestRow:loop -->\n\t</tr>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<th class=\"spread-table-side js-table-side<!-- \\BEGIN selectedColNo:touch#{i} --> selected<!-- \\END selectedColNo:touch#{i} -->\"data-action=\"selectCol({i})\">{i}</th>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->spread-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> spread-table-th<!-- END \\type:touch#th -->\"><div class='spread-table-editable \\{align\\}' contenteditable>\\{value\\}</div><div class='spread-table-pseudo'></div></td>\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n<!-- BEGIN showMenu:exist -->\n<ul class=\"spread-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t<!-- BEGIN mode:touch#cell -->\n\t<li data-action=\"mergeCell\">セルの結合</li>\n\t<li data-action=\"makeTh\">thに設定する</li>\n\t<li data-action=\"makeTd\">tdに設定する</li>\n\t<li data-action=\"align(left)\">左寄せ</li>\n\t<li data-action=\"align(center)\">中央寄せ</li>\n\t<li data-action=\"align(right)\">右寄せ</li>\n\t<!-- END mode:touch#cell -->\n\t<!-- BEGIN mode:touch#col -->\n\t<li data-action=\"addLeftCells({selectedRowNo})\">左に列を追加</li>\n\t<li data-action=\"addRightCells({selectedRowNo})\">右に列を追加</li>\n\t<!-- END mode:touch#col -->\n\t<!-- BEGIN mode:touch#row -->\n\t<li data-action=\"addTopCells({selectedColNo})\">上に行を追加</li>\n\t<li data-action=\"addBottomCells({selectedColNo})\">下に行を追加</li>\t\n\t<!-- END mode:touch#row -->\n</ul>\n<!-- END showMenu:exist -->\n<!-- BEGIN selectArea:exist -->\n<!-- END selectArea:exist -->\n";
+module.exports = "<table class=\"spread-table\">\n\t<tr class=\"spread-table-header js-table-header\">\n\t\t<th></th>\n\t\t<!-- BEGIN highestRow:loop -->\n\t\t<th data-action=\"selectRow({i})\"<!-- \\BEGIN selectedRowNo:touch#{i} -->class=\"selected\"<!-- \\END selectedRowNo:touch#{i} -->>{i}[noToEn]</th>\n\t\t<!-- END highestRow:loop -->\n\t</tr>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<th class=\"spread-table-side js-table-side<!-- \\BEGIN selectedColNo:touch#{i} --> selected<!-- \\END selectedColNo:touch#{i} -->\"data-action=\"selectCol({i})\">{i}</th>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->spread-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> spread-table-th<!-- END \\type:touch#th -->\"><div class='spread-table-editable \\{align\\}' contenteditable>\\{value\\}</div><div class='spread-table-pseudo'></div></td>\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n<!-- BEGIN showMenu:exist -->\n<ul class=\"spread-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t<!-- BEGIN mode:touch#cell -->\n\t<li data-action=\"mergeCell\">セルの結合</li>\n\t<li data-action=\"makeTh\">thに設定する</li>\n\t<li data-action=\"makeTd\">tdに設定する</li>\n\t<li data-action=\"align(left)\">左寄せ</li>\n\t<li data-action=\"align(center)\">中央寄せ</li>\n\t<li data-action=\"align(right)\">右寄せ</li>\n\t<!-- END mode:touch#cell -->\n\t<!-- BEGIN mode:touch#col -->\n\t<li data-action=\"addLeftCells({selectedRowNo})\">左に列を追加</li>\n\t<li data-action=\"addRightCells({selectedRowNo})\">右に列を追加</li>\n\t<li data-action=\"removeCol({selectedRowNo})\">現在の列を削除</li>\n\t<!-- END mode:touch#col -->\n\t<!-- BEGIN mode:touch#row -->\n\t<li data-action=\"addTopCells({selectedColNo})\">上に行を追加</li>\n\t<li data-action=\"addBottomCells({selectedColNo})\">下に行を追加</li>\t\n\t<li data-action=\"removeRow({selectedColNo})\">現在の行を削除</li>\n\t<!-- END mode:touch#row -->\n</ul>\n<!-- END showMenu:exist -->\n<!-- BEGIN selectArea:exist -->\n<!-- END selectArea:exist -->\n";
 
 },{}]},{},[5]);
