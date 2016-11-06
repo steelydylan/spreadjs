@@ -331,7 +331,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			targetPoints.forEach(function(point){
 				var index = self.getCellIndexByPos(point.x,point.y);
 				var cell = self.getCellByPos(point.x,point.y);
-				var newcell = {type:"td",colspan:1,rowspan:1,value:""};
+				var newcell = {type:"td",colspan:1,rowspan:cell.rowspan,value:""};
 				if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
 					if(point.width + point.x - newpoint.x > 1){
 						cell.colspan = parseInt(cell.colspan) + 1;
@@ -372,7 +372,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			targetPoints.forEach(function(point){
 				var index = self.getCellIndexByPos(point.x,point.y);
 				var cell = self.getCellByPos(point.x,point.y);
-				var newcell = {type:"td",colspan:1,rowspan:1,value:""};
+				var newcell = {type:"td",colspan:1,rowspan:cell.rowspan,value:""};
 				if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
 					if(point.width + point.x - newpoint.x > 1){
 						cell.colspan = parseInt(cell.colspan) + 1;
