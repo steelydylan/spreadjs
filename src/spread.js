@@ -1,6 +1,7 @@
 (function(global) {
 var aTemplate = require("./aTemplate.js");
 var $ = require("jquery");
+var toMarkdown = require("./table2md.js");
 var template = require("./table.html");
 var returnTable = require("./return-table.html");
 var style = require("./spread.css");
@@ -253,6 +254,9 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 	getTable:function(){
 		return this.getHtml(returnTable,true);
 	},
+	getMarkdown:function(){
+		return toMarkdown(this.getHtml(returnTable,true));
+	},
 	onUpdated:function(){
 		var points = this.getAllPoints();
 		var point = this.getLargePoint.apply(null,points);
@@ -388,8 +392,8 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			this.data.mode = "cell";
 			this.data.selectedRowNo = -1;
 			this.data.selectedColNo = -1;
+			this.data.showMenu = false;
 			if(this.e.type == "click"){
-				this.data.showMenu = false;
 				if(this.e.shiftKey){
 					this.selectRange(a,b);
 				}

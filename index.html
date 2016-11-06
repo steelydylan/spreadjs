@@ -3,34 +3,54 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Document</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
 	<style>
 		.source-area{
 			margin-top: 10px;
 			padding: 5px;
 			width: 500px;
 			background-color: #eee;
+			overflow-x: scroll;
+		}
+		.main{
+			padding: 10px;
+		}
+		.column{
+			float: left;
+			width: 50%;
 		}
 	</style>
 </head>
 <body>
-	<table class="table">
-		<tr>
-			<th colspan="3">hoge</th>
-			<th rowspan="2">test</th>
-		</tr>
-		<tr>
-			<th colspan="2">hoge</th>
-			<td>test</td>
-		</tr>
-		<tr>
-			<td>test</td>
-			<td>hoge</td>
-			<td>test</td>
-			<td>hoge</td>
-		</tr>
-	</table>
-	<div class="source-area">
-		<pre class="test"></pre>
+	<div class="main">
+		<table class="table">
+			<tr>
+				<th colspan="3">hoge</th>
+				<th rowspan="2">test</th>
+			</tr>
+			<tr>
+				<th colspan="2">hoge</th>
+				<td>test</td>
+			</tr>
+			<tr>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+				<td>hoge</td>
+			</tr>
+		</table>
+		<div class="column">
+			<p>html</p>
+			<div class="source-area">
+				<pre class="test"></pre>
+			</div>
+		</div>
+		<div class="column">
+			<p>markdown</p>
+			<div class="source-area">
+				<pre class="markdown"></pre>
+			</div>
+		</div>
 	</div>
 	<script src="./spread.js"></script>
 	<script>
@@ -38,6 +58,7 @@
 		spread.afterRendered = 
 		spread.afterEntered = function(){
 			document.querySelector(".test").innerText = this.getTable();
+			document.querySelector(".markdown").innerText = this.getMarkdown();
 		}
 		spread.afterRendered();
 	</script>

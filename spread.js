@@ -10733,6 +10733,7 @@ module.exports = ".spread-table-wrapper {\n\tposition: relative;\n\tz-index: 0;\
 (function(global) {
 var aTemplate = require("./aTemplate.js");
 var $ = require("jquery");
+var toMarkdown = require("./table2md.js");
 var template = require("./table.html");
 var returnTable = require("./return-table.html");
 var style = require("./spread.css");
@@ -10985,6 +10986,9 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 	getTable:function(){
 		return this.getHtml(returnTable,true);
 	},
+	getMarkdown:function(){
+		return toMarkdown(this.getHtml(returnTable,true));
+	},
 	onUpdated:function(){
 		var points = this.getAllPoints();
 		var point = this.getLargePoint.apply(null,points);
@@ -11120,8 +11124,8 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			this.data.mode = "cell";
 			this.data.selectedRowNo = -1;
 			this.data.selectedColNo = -1;
+			this.data.showMenu = false;
 			if(this.e.type == "click"){
-				this.data.showMenu = false;
 				if(this.e.shiftKey){
 					this.selectRange(a,b);
 				}
@@ -11396,7 +11400,31 @@ global["Spread"] = Spread;
 })((this || 0).self || global);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./aTemplate.js":2,"./return-table.html":3,"./spread.css":4,"./table.html":6,"jquery":1}],6:[function(require,module,exports){
+},{"./aTemplate.js":2,"./return-table.html":3,"./spread.css":4,"./table.html":6,"./table2md.js":7,"jquery":1}],6:[function(require,module,exports){
 module.exports = "<table class=\"spread-table\">\n\t<tr class=\"spread-table-header js-table-header\">\n\t\t<th></th>\n\t\t<!-- BEGIN highestRow:loop -->\n\t\t<th data-action=\"selectRow({i})\"<!-- \\BEGIN selectedRowNo:touch#{i} -->class=\"selected\"<!-- \\END selectedRowNo:touch#{i} -->>{i}[noToEn]</th>\n\t\t<!-- END highestRow:loop -->\n\t</tr>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<th class=\"spread-table-side js-table-side<!-- \\BEGIN selectedColNo:touch#{i} --> selected<!-- \\END selectedColNo:touch#{i} -->\"data-action=\"selectCol({i})\">{i}</th>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->spread-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> spread-table-th<!-- END \\type:touch#th -->\"><div class='spread-table-editable \\{align\\}' contenteditable>\\{value\\}</div><div class='spread-table-pseudo'></div></td>\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n<!-- BEGIN showMenu:exist -->\n<ul class=\"spread-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t<!-- BEGIN mode:touch#cell -->\n\t<li data-action=\"mergeCell\">セルの結合</li>\n\t<li data-action=\"makeTh\">thに設定する</li>\n\t<li data-action=\"makeTd\">tdに設定する</li>\n\t<li data-action=\"align(left)\">左寄せ</li>\n\t<li data-action=\"align(center)\">中央寄せ</li>\n\t<li data-action=\"align(right)\">右寄せ</li>\n\t<!-- END mode:touch#cell -->\n\t<!-- BEGIN mode:touch#col -->\n\t<li data-action=\"addLeftCells({selectedRowNo})\">左に列を追加</li>\n\t<li data-action=\"addRightCells({selectedRowNo})\">右に列を追加</li>\n\t<li data-action=\"removeCol({selectedRowNo})\">現在の列を削除</li>\n\t<!-- END mode:touch#col -->\n\t<!-- BEGIN mode:touch#row -->\n\t<li data-action=\"addTopCells({selectedColNo})\">上に行を追加</li>\n\t<li data-action=\"addBottomCells({selectedColNo})\">下に行を追加</li>\t\n\t<li data-action=\"removeRow({selectedColNo})\">現在の行を削除</li>\n\t<!-- END mode:touch#row -->\n</ul>\n<!-- END showMenu:exist -->\n<!-- BEGIN selectArea:exist -->\n<!-- END selectArea:exist -->\n";
 
-},{}]},{},[5]);
+},{}],7:[function(require,module,exports){
+var $ = require("jquery");
+var table2md = function(html){
+	var $table = $(html);
+	var ret = "";
+	$table.find("tr").each(function(i){
+		ret += "| ";
+		$children = $(this).children();
+		$children.each(function(){
+			ret += $(this).html();
+			ret += " | ";
+		});
+		if(i == 0){
+			ret+="\n| ";
+			$children.each(function(){
+				ret += "--- | ";
+			});
+		}
+		ret += "\n";
+	});
+	return ret;
+};
+
+module.exports = table2md;
+},{"jquery":1}]},{},[5]);
