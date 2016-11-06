@@ -11168,6 +11168,59 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			this.insertRow(point2.y+1,newRow);
 			this.update();
 		},
+		addTopCells:function(){
+			if(this.e.type != "click"){
+				return;
+			}
+			this.data.showMenu = false;
+			var self = this;
+			var points = this.getAllPoints();
+			var point1 = this.getLargePoint.apply(null,points);
+			var selectedPoints = this.getSelectedPoints();
+			var point2 = this.getLargePoint.apply(null,selectedPoints);
+			var newpoint = {x:0,y:point2.y+point2.height-1,width:point1.width,height:1};
+			var targetPoints = [];
+			var newRow = [];
+			points.forEach(function(point){
+				if(self.hitTest(newpoint,point)){
+					targetPoints.push(point);
+				}
+			});
+			if(point2.y == 0){
+				var length = point1.width;
+				for(var i = 0; i < length; i++){
+					var newcell = {type:"td",colspan:1,rowspan:1,value:""};
+					newRow.push(newcell);
+				}
+				self.insertRow(0,newRow);
+				self.update();
+				return;
+			}
+			console.log(targetPoints);
+			targetPoints.forEach(function(point){
+				var index = self.getCellIndexByPos(point.x,point.y);
+				var cell = self.getCellByPos(point.x,point.y);
+				if(!cell){
+					return;
+				}
+				var newcell = {type:"td",colspan:1,rowspan:1,value:""};
+				if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
+					if (point.height > 1) {
+						cell.rowspan = parseInt(cell.rowspan) + 1;
+						cell.rowspan += "";
+					} else if (index.row == point2.y) {
+						var length = parseInt(cell.colspan);
+						for(var i = 0; i < length; i++){
+							newRow.push({type:"td",colspan:1,rowspan:1,value:""});
+						}
+					} else {
+						self.insertCellAt(index.row,index.col,newcell);
+					}
+				}
+			});
+			this.insertRow(point2.y,newRow);
+			this.update();
+		},
 		mergeCell:function(){
 			if(this.e.type != "click"){
 				return;
@@ -11226,6 +11279,6 @@ global["Spread"] = Spread;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./aTemplate.js":2,"./return-table.html":3,"./spread.css":4,"./table.html":6,"jquery":1}],6:[function(require,module,exports){
-module.exports = "<table class=\"spread-table\">\n\t<tr class=\"spread-table-header js-table-header\">\n\t\t<th></th>\n\t\t<!-- BEGIN highestRow:loop -->\n\t\t<th data-action=\"selectRow({i})\">{i}[noToEn]</th>\n\t\t<!-- END highestRow:loop -->\n\t</tr>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<th class=\"spread-table-side js-table-side\">{i}</th>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->spread-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> spread-table-th<!-- END \\type:touch#th -->\"><div class='spread-table-editable' contenteditable>\\{value\\}</div><div class='spread-table-pseudo'></div></td>\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n<!-- BEGIN showMenu:exist -->\n<ul class=\"spread-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t<li data-action=\"mergeCell\">セルの結合</li>\n\t<li data-action=\"makeTh\">thに設定する</li>\n\t<li data-action=\"makeTd\">tdに設定する</li>\n\t<li data-action=\"addRightCells\">右に列を追加</li>\n\t<li data-action=\"addLeftCells\">左に列を追加</li>\n\t<li data-action=\"addBottomCells\">下に行を追加</li>\n</ul>\n<!-- END showMenu:exist -->\n<!-- BEGIN selectArea:exist -->\n<!-- END selectArea:exist -->\n";
+module.exports = "<table class=\"spread-table\">\n\t<tr class=\"spread-table-header js-table-header\">\n\t\t<th></th>\n\t\t<!-- BEGIN highestRow:loop -->\n\t\t<th data-action=\"selectRow({i})\">{i}[noToEn]</th>\n\t\t<!-- END highestRow:loop -->\n\t</tr>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<th class=\"spread-table-side js-table-side\">{i}</th>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->spread-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> spread-table-th<!-- END \\type:touch#th -->\"><div class='spread-table-editable' contenteditable>\\{value\\}</div><div class='spread-table-pseudo'></div></td>\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n<!-- BEGIN showMenu:exist -->\n<ul class=\"spread-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t<li data-action=\"mergeCell\">セルの結合</li>\n\t<li data-action=\"makeTh\">thに設定する</li>\n\t<li data-action=\"makeTd\">tdに設定する</li>\n\t<li data-action=\"addRightCells\">右に列を追加</li>\n\t<li data-action=\"addLeftCells\">左に列を追加</li>\n\t<li data-action=\"addBottomCells\">下に行を追加</li>\n\t<li data-action=\"addTopCells\">上に行を追加</li>\n</ul>\n<!-- END showMenu:exist -->\n<!-- BEGIN selectArea:exist -->\n<!-- END selectArea:exist -->\n";
 
 },{}]},{},[5]);

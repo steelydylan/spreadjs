@@ -436,6 +436,59 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			this.insertRow(point2.y+1,newRow);
 			this.update();
 		},
+		addTopCells:function(){
+			if(this.e.type != "click"){
+				return;
+			}
+			this.data.showMenu = false;
+			var self = this;
+			var points = this.getAllPoints();
+			var point1 = this.getLargePoint.apply(null,points);
+			var selectedPoints = this.getSelectedPoints();
+			var point2 = this.getLargePoint.apply(null,selectedPoints);
+			var newpoint = {x:0,y:point2.y+point2.height-1,width:point1.width,height:1};
+			var targetPoints = [];
+			var newRow = [];
+			points.forEach(function(point){
+				if(self.hitTest(newpoint,point)){
+					targetPoints.push(point);
+				}
+			});
+			if(point2.y == 0){
+				var length = point1.width;
+				for(var i = 0; i < length; i++){
+					var newcell = {type:"td",colspan:1,rowspan:1,value:""};
+					newRow.push(newcell);
+				}
+				self.insertRow(0,newRow);
+				self.update();
+				return;
+			}
+			console.log(targetPoints);
+			targetPoints.forEach(function(point){
+				var index = self.getCellIndexByPos(point.x,point.y);
+				var cell = self.getCellByPos(point.x,point.y);
+				if(!cell){
+					return;
+				}
+				var newcell = {type:"td",colspan:1,rowspan:1,value:""};
+				if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
+					if (point.height > 1) {
+						cell.rowspan = parseInt(cell.rowspan) + 1;
+						cell.rowspan += "";
+					} else if (index.row == point2.y) {
+						var length = parseInt(cell.colspan);
+						for(var i = 0; i < length; i++){
+							newRow.push({type:"td",colspan:1,rowspan:1,value:""});
+						}
+					} else {
+						self.insertCellAt(index.row,index.col,newcell);
+					}
+				}
+			});
+			this.insertRow(point2.y,newRow);
+			this.update();
+		},
 		mergeCell:function(){
 			if(this.e.type != "click"){
 				return;
