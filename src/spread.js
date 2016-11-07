@@ -223,10 +223,11 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		}
 	},
 	contextmenu:function(){
+		var $ele = $(["data-id="+this.id+"]");
 		this.e.preventDefault();
 		this.data.showMenu = true;
-		this.data.menuX = this.e.pageX;
-		this.data.menuY = this.e.pageY;
+		this.data.menuX = this.e.pageX - parseInt($ele.offset().left);
+		this.data.menuY = this.e.pageY - parseInt($ele.offset().top);;
 		this.update();
 	},
 	parse:function(html){
