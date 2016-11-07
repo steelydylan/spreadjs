@@ -223,11 +223,12 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		}
 	},
 	contextmenu:function(){
-		var $ele = $(["data-id="+this.id+"]");
+		var $ele = $("[data-id='"+this.id+"']");
+		var $target = $(this.e.target);
 		this.e.preventDefault();
 		this.data.showMenu = true;
-		this.data.menuX = this.e.pageX - parseInt($ele.offset().left);
-		this.data.menuY = this.e.pageY - parseInt($ele.offset().top);;
+		this.data.menuX = parseInt($target.offset().left) + parseInt($target.width()) - parseInt($ele.offset().left);
+		this.data.menuY = parseInt($target.offset().top) + parseInt($target.height()) - parseInt($ele.offset().top);
 		this.update();
 	},
 	parse:function(html){
