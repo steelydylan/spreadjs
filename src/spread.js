@@ -7,12 +7,18 @@ var returnTable = require("./return-table.html");
 var style = require("./spread.css");
 var ids = [];
 $("body").append("<style>"+style+"</style>");
+$("body").append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>");
+var defs = {
+	showBtnList:true,
+	lang:"en"
+}
 var Spread = aTemplate.createClass(aTemplate.View,{
-	initialize:function(ele){
+	initialize:function(ele,option){
 		this.id = this.getRandText(10);
 		$(ele).wrap("<div data-id='"+this.id+"'></div>");
 		this.addTemplate(template,this.id);
 		this.inherit();
+		this.data = $.extend({},defs,option);
 		this.data.point = {x:-1,y:-1};
 		this.data.selectedRowNo = -1;
 		this.data.selectedColNo = -1;

@@ -16,7 +16,7 @@
 .spread-table {
 	border-collapse: collapse;
 	table-layout: fixed;
-	border-collapse: collapse;
+	font-family: "Open Sans", Helvetica, Arial, sans-serif;
 }
 
 .spread-table input {
@@ -86,12 +86,15 @@
 	left: 0;
 	background-color: #fff;
 	border: 1px solid #666;
+	color: #474747;
+	font-size: 13px;
 }
 
 .spread-table-menu li {
 	display: block;
 	font-size: 14px;
-	padding: 7px;
+	padding: 5px 7px;
+	line-height: 1;
 	border-bottom: 1px solid #ddd;
 	cursor: pointer;
 }
@@ -149,6 +152,7 @@
     position: absolute;
     right: 5px;
     top: 5px;
+    cursor: pointer;
 }
 
 .spread-table-toggle-btn:after{
