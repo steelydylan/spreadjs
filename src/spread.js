@@ -17,8 +17,24 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		this.data.selectedRowNo = -1;
 		this.data.selectedColNo = -1;
 		this.data.row = this.parse($(ele).html());
+		this.data.highestRow = this.highestRow;
 		$(ele).remove();
 		this.update();
+	},
+	highestRow:function(){
+		var arr = [];
+		this.data.row.forEach(function(item,i){
+			if(!item || !item.col){
+				return;
+			}
+			item.col.forEach(function(obj,t){
+				var length = parseInt(obj.colspan);
+				for (var i = 0; i < length; i++){
+					arr.push(i);
+				}
+			});
+		});
+		return arr;
 	},
 	getRand:function(a,b){
 		return ~~(Math.random() * (b - a + 1)) + a;
@@ -365,6 +381,9 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		this.update();
 	},
 	updateTable:function(b,a){
+		if(this.e.type === "mouseup" && this.data.showMenu){
+			return;
+		}
 		a = parseInt(a);
 		b = parseInt(b);
 		this.data.mode = "cell";
@@ -632,23 +651,6 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		});
 		this.data.showMenu = false;
 		this.update();
-	},
-	data:{
-		highestRow:function(){
-			var arr = [];
-			this.data.row.forEach(function(item,i){
-				if(!item || !item.col){
-					return;
-				}
-				item.col.forEach(function(obj,t){
-					var length = parseInt(obj.colspan);
-					for (var i = 0; i < length; i++){
-						arr.push(i);
-					}
-				});
-			});
-			return arr;
-		}
 	},
 	convert:{
 		noToEn:function(i){

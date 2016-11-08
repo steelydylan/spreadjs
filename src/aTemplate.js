@@ -100,6 +100,9 @@ aTemplate.View = aTemplate.createClass({
 		for(var i in opt){
 			this[i] = opt[i];
 		}
+		if(!this.data){
+			this.data = {};
+		}
 		this.setId();
 	},
 	getData:function(){
