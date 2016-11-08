@@ -11187,6 +11187,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		if(this.e.type != "click"){
 			return;
 		}
+		this.data.selectedRowNo = parseInt(selectedno);
 		this.data.showMenu = false;
 		var self = this;
 		var points = this.getAllPoints();
@@ -11217,7 +11218,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		if(this.e.type != "click"){
 			return;
 		}
-		this.data.selectedRowNo = parseInt(this.data.selectedRowNo)+1;
+		this.data.selectedRowNo = parseInt(selectedno)+1;
 		this.data.showMenu = false;
 		var self = this;
 		var points = this.getAllPoints();
@@ -11258,6 +11259,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			return;
 		}
 		this.data.showMenu = false;
+		this.data.selectedColNo = parseInt(selectedno);
 		var self = this;
 		var points = this.getAllPoints();
 		var point1 = this.getLargePoint.apply(null,points);
@@ -11309,7 +11311,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			return;
 		}
 		this.data.showMenu = false;
-		this.data.selectedColNo = parseInt(this.data.selectedColNo)+1;
+		this.data.selectedColNo = parseInt(selectedno)+1;
 		var self = this;
 		var points = this.getAllPoints();
 		var point1 = this.getLargePoint.apply(null,points);
