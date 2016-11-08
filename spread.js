@@ -11062,11 +11062,13 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		this.update();
 	},
 	selectCol:function(i){
-		this.unselectCells();
-		this.data.showMenu = false;
 		if(this.e.type == "contextmenu"){
+			this.unselectCells();
 			this.contextmenu();
-		} else if(this.e.type != "click"){
+		} else if(this.e.type == "click"){
+			this.unselectCells();
+			this.data.showMenu = false;
+		} else{
 			return;
 		}
 		this.data.mode = "row";
