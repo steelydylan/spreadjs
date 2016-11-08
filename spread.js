@@ -10731,7 +10731,7 @@ if (typeof module !== 'undefined' && typeof exports === 'object') {
 module.exports = "<table>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<!-- \\BEGIN type:touch#th -->\n\t\t<th<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 -->>\\{value\\}</th>\n\t\t<!-- \\END type:touch#th -->\n\t\t<!-- \\BEGIN type:touch#td -->\n\t\t<td<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 -->>\\{value\\}</td>\n\t\t<!-- \\END type:touch#td -->\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>";
 
 },{}],4:[function(require,module,exports){
-module.exports = ".spread-table-wrapper {\n\tposition: relative;\n\tz-index: 0;\n\twidth: 100%;\n}\n\n.spread-table-pseudo {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 100%;\n\tz-index: -1;\n}\n\n.spread-table {\n\tborder-collapse: collapse;\n\ttable-layout: fixed;\n\tborder-collapse: collapse;\n}\n\n.spread-table input {\n\twidth: 100%;\n\theight: 100%;\n\tdisplay: block;\n}\n\n.spread-table td,\n.spread-table th {\n\ttext-align: left;\n\twidth: 100px;\n\theight: 15px;\n\toverflow: hidden;\n\tposition: relative;\n\tz-index: 0;\n\tborder: 1px solid #cccccc;\n}\n\n.spread-table th {\n\tbackground-color: #eee;\n\tfont-weight: normal;\n}\n\n.spread-table .left{\n\ttext-align: left;\n}\n\n.spread-table .right{\n\ttext-align: right;\n}\n\n.spread-table .center{\n\ttext-align: center;\n}\n\n.spread-table .spread-table-th {\n\tbackground-color: #ddd;\n\tfont-weight: bold;\n}\n\n.spread-table .spread-table-selected {\n\tbackground-color: #eaf2f9;\n}\n\n.spread-table-editable {\n\twidth: 100%;\n\theight: 100%;\n}\n\n.spread-table-pseudo {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 100%;\n\tz-index: -1;\n}\n\n.spread-table-menu {\n\tdisplay: block;\n\tlist-style-type: none;\n\tpadding: 0;\n\tmargin: 0;\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\tbackground-color: #fff;\n\tborder: 1px solid #666;\n}\n\n.spread-table-menu li {\n\tdisplay: block;\n\tfont-size: 14px;\n\tpadding: 7px;\n\tborder-bottom: 1px solid #ddd;\n\tcursor: pointer;\n}\n\n.spread-table-menu li:hover {\n\tbackground-color: #eee;\n}\n\n.spread-table-header th {\n\ttext-align: center;\n}\n\n.spread-table-header .selected{\n\tbackground-color: #eaf2f9;\n}\n\n.spread-table-side.selected{\n\tbackground-color: #eaf2f9;\n}\n\n.spread-table .spread-table-side {\n\ttext-align: center;\n}\n\n";
+module.exports = ".spread-table-wrapper {\n\tposition: relative;\n\tz-index: 0;\n\twidth: 100%;\n}\n\n.spread-table-pseudo {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 100%;\n\tz-index: -1;\n}\n\n.spread-table {\n\tborder-collapse: collapse;\n\ttable-layout: fixed;\n\tborder-collapse: collapse;\n}\n\n.spread-table input {\n\twidth: 100%;\n\theight: 100%;\n\tdisplay: block;\n}\n\n.spread-table td,\n.spread-table th {\n\ttext-align: left;\n\twidth: 100px;\n\theight: 15px;\n\toverflow: hidden;\n\tposition: relative;\n\tz-index: 0;\n\tborder: 1px solid #cccccc;\n}\n\n.spread-table th {\n\tbackground-color: #eee;\n\tfont-weight: normal;\n}\n\n.spread-table .left{\n\ttext-align: left;\n}\n\n.spread-table .right{\n\ttext-align: right;\n}\n\n.spread-table .center{\n\ttext-align: center;\n}\n\n.spread-table .spread-table-th {\n\tbackground-color: #ddd;\n\tfont-weight: bold;\n}\n\n.spread-table .spread-table-selected {\n\tbackground-color: #eaf2f9;\n}\n\n.spread-table-editable {\n\twidth: 100%;\n\theight: 100%;\n}\n\n.spread-table-pseudo {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 100%;\n\tz-index: -1;\n}\n\n.spread-table-menu {\n\tdisplay: block;\n\tlist-style-type: none;\n\tpadding: 0;\n\tmargin: 0;\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\tbackground-color: #fff;\n\tborder: 1px solid #666;\n}\n\n.spread-table-menu li {\n\tdisplay: block;\n\tfont-size: 14px;\n\tpadding: 7px;\n\tborder-bottom: 1px solid #ddd;\n\tcursor: pointer;\n}\n\n.spread-table-menu li:hover {\n\tbackground-color: #eee;\n}\n\n.spread-table-header th {\n\ttext-align: center;\n\tposition: relative;\n}\n\n.spread-table-header .selected{\n\tbackground-color: #eaf2f9;\n}\n\n.spread-table-side.selected{\n\tbackground-color: #eaf2f9;\n}\n\n.spread-table .spread-table-side {\n\ttext-align: center;\n\tposition: relative;\n}\n\n.spread-table-btn-list{\n\tmargin-bottom: 10px;\n\tdisplay: table;\n}\n\n.spread-table-btn{\n\tdisplay: table-cell;\n\tborder-left: none;\n\tborder: 1px solid #D9D9D9;\n\tbackground-color: #F2F2F2;\n\tfont-size: 12px;\n\tpadding: 3px 5px;\n}\n\n.spread-table-btn:first-child{\n\tborder-top-left-radius: 3px;\n\tborder-bottom-left-radius: 3px;\n}\n\n.spread-table-btn:last-child{\n\tborder-top-right-radius: 3px;\n\tborder-bottom-right-radius: 3px;\n}\n\n.spread-table-toggle-btn{\n\tdisplay: inline-block;\n    border: 1px solid #CCC;\n    padding: 5px;\n    position: absolute;\n    right: 5px;\n    top: 5px;\n}\n\n.spread-table-toggle-btn:after{\n    content:\"\";\n    display: block;\n    border: solid transparent;\n\tcontent: \" \";\n\theight: 0;\n\twidth: 0;\n\tborder-color: rgba(136, 183, 213, 0);\n    border-top-color: #88b7d5;\n    border-width: 5px;\n    margin-left: -5px;\n    position: absolute;\n    top: 2px;\n    left: 5px;\n}\n\n.spread-table-first{\n\twidth: 15px;\n}\n";
 
 },{}],5:[function(require,module,exports){
 (function (global){
@@ -10753,6 +10753,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		this.data.point = {x:-1,y:-1};
 		this.data.selectedRowNo = -1;
 		this.data.selectedColNo = -1;
+		this.data.showBtnList = true;
 		this.data.row = this.parse($(ele).html());
 		this.data.highestRow = this.highestRow;
 		$(ele).remove();
@@ -10980,8 +10981,8 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		var $target = $(this.e.target);
 		this.e.preventDefault();
 		this.data.showMenu = true;
-		this.data.menuX = parseInt($target.offset().left) + parseInt($target.width()) - parseInt($ele.offset().left);
-		this.data.menuY = parseInt($target.offset().top) + parseInt($target.height()) - parseInt($ele.offset().top);
+		this.data.menuX = parseInt($target.offset().left) - parseInt($ele.offset().left);
+		this.data.menuY = parseInt($target.offset().top) - parseInt($ele.offset().top);
 		this.update();
 	},
 	parse:function(html){
@@ -11034,12 +11035,25 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 	    	this.data.row[a].col.splice(b,0,item);
 		}
 	},
-	selectRow:function(i){
+	selectRowViaBtn:function(i){
+		if(this.e.type != "click"){
+			return;
+		}
 		this.unselectCells();
-		this.data.showMenu = false;
-		if(this.e.type == "contextmenu"){
+		this.contextmenu();
+		this.data.mode = "col";
+		this.data.selectedColNo = -1;
+		this.data.selectedRowNo = i;
+		this.update();
+	},
+	selectRow:function(i){
+		if (this.e.type == "contextmenu"){
+			this.unselectCells();
 			this.contextmenu();
-		} else if(this.e.type != "click"){
+		}else if(this.e.type == "click"){
+			this.unselectCells();
+			this.data.showMenu = false;
+		} else {
 			return;
 		}
 		this.data.mode = "col";
@@ -11055,6 +11069,17 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		} else if(this.e.type != "click"){
 			return;
 		}
+		this.data.mode = "row";
+		this.data.selectedRowNo = -1;
+		this.data.selectedColNo = i;
+		this.update();
+	},
+	selectColViaBtn:function(i){
+		if(this.e.type != "click"){
+			return;
+		}
+		this.unselectCells();
+		this.contextmenu(); 
 		this.data.mode = "row";
 		this.data.selectedRowNo = -1;
 		this.data.selectedColNo = i;
@@ -11405,7 +11430,7 @@ global["Spread"] = Spread;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./aTemplate.js":2,"./return-table.html":3,"./spread.css":4,"./table.html":6,"./table2md.js":7,"jquery":1}],6:[function(require,module,exports){
-module.exports = "<div class=\"spread-table-wrapper\">\n\t<table class=\"spread-table\">\n\t\t<tr class=\"spread-table-header js-table-header\">\n\t\t\t<th></th>\n\t\t\t<!-- BEGIN highestRow:loop -->\n\t\t\t<th data-action=\"selectRow({i})\"<!-- \\BEGIN selectedRowNo:touch#{i} -->class=\"selected\"<!-- \\END selectedRowNo:touch#{i} -->>{i}[noToEn]</th>\n\t\t\t<!-- END highestRow:loop -->\n\t\t</tr>\n\t\t<!-- BEGIN row:loop -->\n\t\t<tr>\n\t\t\t<th class=\"spread-table-side js-table-side<!-- \\BEGIN selectedColNo:touch#{i} --> selected<!-- \\END selectedColNo:touch#{i} -->\"data-action=\"selectCol({i})\">{i}</th>\n\t\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->spread-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> spread-table-th<!-- END \\type:touch#th -->\"><div class='spread-table-editable \\{align\\}' contenteditable>\\{value\\}</div><div class='spread-table-pseudo'></div></td>\n\t\t\t<!-- \\END row.{i}.col:loop -->\n\t\t</tr>\n\t\t<!-- END row:loop -->\n\t</table>\n\t<!-- BEGIN showMenu:exist -->\n\t<ul class=\"spread-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t\t<!-- BEGIN mode:touch#cell -->\n\t\t<li data-action=\"mergeCell\">セルの結合</li>\n\t\t<li data-action=\"makeTh\">thに設定する</li>\n\t\t<li data-action=\"makeTd\">tdに設定する</li>\n\t\t<li data-action=\"align(left)\">左寄せ</li>\n\t\t<li data-action=\"align(center)\">中央寄せ</li>\n\t\t<li data-action=\"align(right)\">右寄せ</li>\n\t\t<!-- END mode:touch#cell -->\n\t\t<!-- BEGIN mode:touch#col -->\n\t\t<li data-action=\"addLeftCells({selectedRowNo})\">左に列を追加</li>\n\t\t<li data-action=\"addRightCells({selectedRowNo})\">右に列を追加</li>\n\t\t<li data-action=\"removeCol({selectedRowNo})\">現在の列を削除</li>\n\t\t<!-- END mode:touch#col -->\n\t\t<!-- BEGIN mode:touch#row -->\n\t\t<li data-action=\"addTopCells({selectedColNo})\">上に行を追加</li>\n\t\t<li data-action=\"addBottomCells({selectedColNo})\">下に行を追加</li>\t\n\t\t<li data-action=\"removeRow({selectedColNo})\">現在の行を削除</li>\n\t\t<!-- END mode:touch#row -->\n\t</ul>\n\t<!-- END showMenu:exist -->\n\t<!-- BEGIN selectArea:exist -->\n\t<!-- END selectArea:exist -->\n</div>";
+module.exports = "<!-- BEGIN showBtnList:exist -->\n<div class=\"spread-table-btn-list\">\n\t<button class=\"spread-table-btn\" data-action=\"mergeCell\">セルの結合</button>\n\t<button class=\"spread-table-btn\" data-action=\"align(left)\">左寄せ</button>\n\t<button class=\"spread-table-btn\" data-action=\"align(center)\">中央寄せ</button>\n\t<button class=\"spread-table-btn\" data-action=\"align(right)\">右寄せ</button>\n</div>\n<!-- END showBtnList:exist -->\n<div class=\"spread-table-wrapper\">\n\t<table class=\"spread-table\">\n\t\t<tr class=\"spread-table-header js-table-header\">\n\t\t\t<th class=\"spread-table-first\"></th>\n\t\t\t<!-- BEGIN highestRow:loop -->\n\t\t\t<th data-action=\"selectRow({i})\"<!-- \\BEGIN selectedRowNo:touch#{i} -->class=\"selected\"<!-- \\END selectedRowNo:touch#{i} -->>{i}[noToEn]<span class=\"spread-table-toggle-btn\" data-action=\"selectRowViaBtn({i})\"></span></th>\n\t\t\t<!-- END highestRow:loop -->\n\t\t</tr>\n\t\t<!-- BEGIN row:loop -->\n\t\t<tr>\n\t\t\t<th class=\"spread-table-side js-table-side<!-- \\BEGIN selectedColNo:touch#{i} --> selected<!-- \\END selectedColNo:touch#{i} -->\"data-action=\"selectCol({i})\">{i}<span class=\"spread-table-toggle-btn\" data-action=\"selectColViaBtn({i})\"></span></th>\n\t\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->spread-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> spread-table-th<!-- END \\type:touch#th -->\"><div class='spread-table-editable \\{align\\}' contenteditable>\\{value\\}</div><div class='spread-table-pseudo'></div></td>\n\t\t\t<!-- \\END row.{i}.col:loop -->\n\t\t</tr>\n\t\t<!-- END row:loop -->\n\t</table>\n\t<!-- BEGIN showMenu:exist -->\n\t<ul class=\"spread-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t\t<!-- BEGIN mode:touch#cell -->\n\t\t<li data-action=\"mergeCell\">セルの結合</li>\n\t\t<li data-action=\"makeTh\">thに設定する</li>\n\t\t<li data-action=\"makeTd\">tdに設定する</li>\n\t\t<li data-action=\"align(left)\">左寄せ</li>\n\t\t<li data-action=\"align(center)\">中央寄せ</li>\n\t\t<li data-action=\"align(right)\">右寄せ</li>\n\t\t<!-- END mode:touch#cell -->\n\t\t<!-- BEGIN mode:touch#col -->\n\t\t<li data-action=\"addLeftCells({selectedRowNo})\">左に列を追加</li>\n\t\t<li data-action=\"addRightCells({selectedRowNo})\">右に列を追加</li>\n\t\t<li data-action=\"removeCol({selectedRowNo})\">現在の列を削除</li>\n\t\t<!-- END mode:touch#col -->\n\t\t<!-- BEGIN mode:touch#row -->\n\t\t<li data-action=\"addTopCells({selectedColNo})\">上に行を追加</li>\n\t\t<li data-action=\"addBottomCells({selectedColNo})\">下に行を追加</li>\t\n\t\t<li data-action=\"removeRow({selectedColNo})\">現在の行を削除</li>\n\t\t<!-- END mode:touch#row -->\n\t</ul>\n\t<!-- END showMenu:exist -->\n\t<!-- BEGIN selectArea:exist -->\n\t<!-- END selectArea:exist -->\n</div>";
 
 },{}],7:[function(require,module,exports){
 var $ = require("jquery");

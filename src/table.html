@@ -1,14 +1,22 @@
+<!-- BEGIN showBtnList:exist -->
+<div class="spread-table-btn-list">
+	<button class="spread-table-btn" data-action="mergeCell">セルの結合</button>
+	<button class="spread-table-btn" data-action="align(left)">左寄せ</button>
+	<button class="spread-table-btn" data-action="align(center)">中央寄せ</button>
+	<button class="spread-table-btn" data-action="align(right)">右寄せ</button>
+</div>
+<!-- END showBtnList:exist -->
 <div class="spread-table-wrapper">
 	<table class="spread-table">
 		<tr class="spread-table-header js-table-header">
-			<th></th>
+			<th class="spread-table-first"></th>
 			<!-- BEGIN highestRow:loop -->
-			<th data-action="selectRow({i})"<!-- \BEGIN selectedRowNo:touch#{i} -->class="selected"<!-- \END selectedRowNo:touch#{i} -->>{i}[noToEn]</th>
+			<th data-action="selectRow({i})"<!-- \BEGIN selectedRowNo:touch#{i} -->class="selected"<!-- \END selectedRowNo:touch#{i} -->>{i}[noToEn]<span class="spread-table-toggle-btn" data-action="selectRowViaBtn({i})"></span></th>
 			<!-- END highestRow:loop -->
 		</tr>
 		<!-- BEGIN row:loop -->
 		<tr>
-			<th class="spread-table-side js-table-side<!-- \BEGIN selectedColNo:touch#{i} --> selected<!-- \END selectedColNo:touch#{i} -->"data-action="selectCol({i})">{i}</th>
+			<th class="spread-table-side js-table-side<!-- \BEGIN selectedColNo:touch#{i} --> selected<!-- \END selectedColNo:touch#{i} -->"data-action="selectCol({i})">{i}<span class="spread-table-toggle-btn" data-action="selectColViaBtn({i})"></span></th>
 			<!-- \BEGIN row.{i}.col:loop -->
 			<td colspan="\{colspan\}" rowspan="\{rowspan\}" data-action="updateTable(\{i\},{i})" data-cell-id="\{i\}-{i}" class="<!-- \BEGIN selected:exist -->spread-table-selected<!-- \END selected:exist --><!-- \BEGIN type:touch#th --> spread-table-th<!-- END \type:touch#th -->"><div class='spread-table-editable \{align\}' contenteditable>\{value\}</div><div class='spread-table-pseudo'></div></td>
 			<!-- \END row.{i}.col:loop -->

@@ -16,6 +16,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		this.data.point = {x:-1,y:-1};
 		this.data.selectedRowNo = -1;
 		this.data.selectedColNo = -1;
+		this.data.showBtnList = true;
 		this.data.row = this.parse($(ele).html());
 		this.data.highestRow = this.highestRow;
 		$(ele).remove();
@@ -243,8 +244,8 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		var $target = $(this.e.target);
 		this.e.preventDefault();
 		this.data.showMenu = true;
-		this.data.menuX = parseInt($target.offset().left) + parseInt($target.width()) - parseInt($ele.offset().left);
-		this.data.menuY = parseInt($target.offset().top) + parseInt($target.height()) - parseInt($ele.offset().top);
+		this.data.menuX = parseInt($target.offset().left) - parseInt($ele.offset().left);
+		this.data.menuY = parseInt($target.offset().top) - parseInt($ele.offset().top);
 		this.update();
 	},
 	parse:function(html){
@@ -297,12 +298,25 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 	    	this.data.row[a].col.splice(b,0,item);
 		}
 	},
-	selectRow:function(i){
+	selectRowViaBtn:function(i){
+		if(this.e.type != "click"){
+			return;
+		}
 		this.unselectCells();
-		this.data.showMenu = false;
-		if(this.e.type == "contextmenu"){
+		this.contextmenu();
+		this.data.mode = "col";
+		this.data.selectedColNo = -1;
+		this.data.selectedRowNo = i;
+		this.update();
+	},
+	selectRow:function(i){
+		if (this.e.type == "contextmenu"){
+			this.unselectCells();
 			this.contextmenu();
-		} else if(this.e.type != "click"){
+		}else if(this.e.type == "click"){
+			this.unselectCells();
+			this.data.showMenu = false;
+		} else {
 			return;
 		}
 		this.data.mode = "col";
@@ -318,6 +332,17 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		} else if(this.e.type != "click"){
 			return;
 		}
+		this.data.mode = "row";
+		this.data.selectedRowNo = -1;
+		this.data.selectedColNo = i;
+		this.update();
+	},
+	selectColViaBtn:function(i){
+		if(this.e.type != "click"){
+			return;
+		}
+		this.unselectCells();
+		this.contextmenu(); 
 		this.data.mode = "row";
 		this.data.selectedRowNo = -1;
 		this.data.selectedColNo = i;
