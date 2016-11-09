@@ -11142,10 +11142,12 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				removeCells.push(cell);
 			}else{
 				cell.rowspan = parseInt(cell.rowspan) - 1;
-				if(selectedno == point.y){
+				if(point.x == 0){
+					self.insertCellAt(point.y+1,0,cell);
+				}else if(selectedno == point.y){
 					var index = self.getCellIndexByPos(point.x-1,point.y+1);
 					self.insertCellAt(index.row,index.col+1,cell);
-				}
+				} 
 			}
 		});
 		removeCells.forEach(function(cell){
