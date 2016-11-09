@@ -561,7 +561,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			}
 			var newcell = {type:"td",colspan:1,rowspan:1,value:""};
 			if(typeof index.row !== "undefined" && typeof index.col !== "undefined"){
-				if (point.height > 1 && point.y < selectedno) {
+				if (point.height > 1 && point.y <= selectedno) {
 					cell.rowspan = parseInt(cell.rowspan) + 1;
 					cell.rowspan += "";
 				} else if (index.row == selectedno+1) {
