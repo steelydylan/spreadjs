@@ -153,6 +153,15 @@
     right: 5px;
     top: 5px;
     cursor: pointer;
+    display: none;
+}
+
+.spread-table-header th:hover .spread-table-toggle-btn{
+	display: block;
+}
+
+.spread-table-side:hover .spread-table-toggle-btn{
+	display: block;
 }
 
 .spread-table-toggle-btn:after{

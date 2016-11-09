@@ -454,7 +454,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			}
 		}
 	},
-	addRightCells:function(selectedno){
+	insertColRight:function(selectedno){
 		if(this.e.type != "click"){
 			return;
 		}
@@ -485,7 +485,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		});
 		this.update();
 	},
-	addLeftCells:function(selectedno){
+	insertColLeft:function(selectedno){
 		if(this.e.type != "click"){
 			return;
 		}
@@ -525,7 +525,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		});
 		this.update();
 	},
-	addBottomCells:function(selectedno){
+	insertRowBelow:function(selectedno){
 		if(this.e.type != "click"){
 			return;
 		}
@@ -577,7 +577,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		this.insertRow(selectedno+1,newRow);
 		this.update();
 	},
-	addTopCells:function(selectedno){
+	insertRowAbove:function(selectedno){
 		if(this.e.type != "click"){
 			return;
 		}
@@ -629,7 +629,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		this.insertRow(selectedno,newRow);
 		this.update();
 	},
-	mergeCell:function(){
+	mergeCells:function(){
 		if(this.e.type != "click"){
 			return;
 		}
@@ -645,28 +645,14 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 	splitCell:function(){
 
 	},
-	makeTh:function(){
+	changeCellTypeTo:function(type){
 		if(this.e.type != "click"){
 			return;
 		}
 		this.data.row.forEach(function(item,i){
 			item.col.forEach(function(obj,t){
 				if(obj.selected){
-					obj.type = "th";
-				}
-			});
-		});
-		this.data.showMenu = false;
-		this.update();
-	},
-	makeTd:function(){
-		if(this.e.type != "click"){
-			return;
-		}
-		this.data.row.forEach(function(item,i){
-			item.col.forEach(function(obj,t){
-				if(obj.selected){
-					obj.type = "td";
+					obj.type = type;
 				}
 			});
 		});
