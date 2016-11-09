@@ -405,6 +405,10 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				removeCells.push(cell);
 			}else{
 				cell.rowspan = parseInt(cell.rowspan) - 1;
+				if(selectedno == point.y){
+					var index = self.getCellIndexByPos(point.x-1,point.y+1);
+					self.insertCellAt(index.row,index.col+1,cell);
+				}
 			}
 		});
 		removeCells.forEach(function(cell){
@@ -479,7 +483,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 					cell.colspan = parseInt(cell.colspan) + 1;
 					cell.colspan += "";
 				}else{
-					self.insertCellAt(index.row,index.col+1,newcell)
+					self.insertCellAt(index.row,index.col+1,newcell);
 				}
 			}
 		});
