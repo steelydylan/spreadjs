@@ -392,11 +392,22 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		var point1 = this.getLargePoint.apply(null,points);
 		selectedno = parseInt(selectedno);
 		var newpoint = {x:0,y:selectedno,width:point1.width,height:1};
+		var nextpoint = {x:0,y:selectedno+1,width:point1.width,height:1};
 		var targetPoints = [];
 		var removeCells = [];
+		var insertCells = [];
 		points.forEach(function(point){
 			if(self.hitTest(newpoint,point)){
 				targetPoints.push(point);
+			}
+		});
+		points.forEach(function(point){
+			if(self.hitTest(nextpoint,point)){
+				var cell = self.getCellByPos(point.x,point.y);
+				cell.x = point.x;
+				if(point.y == nextpoint.y){
+					insertCells.push(cell);
+				}
 			}
 		});
 		targetPoints.forEach(function(point){
@@ -405,18 +416,26 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				removeCells.push(cell);
 			}else{
 				cell.rowspan = parseInt(cell.rowspan) - 1;
-				if(point.x == 0){
-					self.insertCellAt(point.y+1,0,cell);
-				}else if(selectedno == point.y){
-					var index = self.getCellIndexByPos(point.x-1,point.y+1);
-					self.insertCellAt(index.row,index.col+1,cell);
+				if(selectedno == point.y){
+					cell.x = point.x;
+					insertCells.push(cell);
 				} 
+			}
+		});
+		insertCells.sort(function(a,b){
+			if(a.x > b.x){
+				return 1;
+			}else{
+				return -1;
 			}
 		});
 		removeCells.forEach(function(cell){
 			self.removeCell(cell);
 		});
 		this.data.row.splice(selectedno,1);
+		if(insertCells.length > 0) {
+			this.data.row[selectedno] = {col:insertCells};
+		}
 		this.update();
 	},
 	updateTable:function(b,a){
