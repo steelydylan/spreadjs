@@ -1,6 +1,6 @@
 (function(global) {
 var aTemplate = require("./aTemplate.js");
-var $ = require("jquery");
+var $ = require("zepto-browserify").$;
 var toMarkdown = require("./table2md.js");
 var template = require("./table.html");
 var returnTable = require("./return-table.html");
@@ -292,7 +292,12 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		var points = this.getAllPoints();
 		var point = this.getLargePoint.apply(null,points);
 		var width = point.width;
-		$(".js-table-header th:gt("+width+")","[data-id='"+this.id+"']").remove();
+		var $th = $(".js-table-header th","[data-id='"+this.id+"']");
+		$th.each(function(i){
+			if(i > width){
+				$(this).remove();
+			}
+		})
 		if(this.afterRendered){
 			this.afterRendered();
 		}

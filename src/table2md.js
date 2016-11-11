@@ -1,4 +1,4 @@
-var $ = require("jquery");
+var $ = require("zepto-browserify").$;
 var table2md = function(html){
 	var $table = $(html);
 	var ret = "";

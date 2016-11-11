@@ -4,7 +4,7 @@
 * MIT Licensed
 * Copyright (C) 2015 steelydylan http://horicdesign.com
 */
-var $ = require("jquery");
+var $ = require("zepto-browserify").$;
 var aTemplate = function(){
 	for(var key in aTemplate){
 		window[key] = aTemplate[key];
@@ -419,7 +419,7 @@ aTemplate.View = aTemplate.createClass({
 			var tem = templates[i];
 			var selector = "#"+tem;
 			var html = this.getHtml(selector);
-			var $target = $("[data-id="+tem+"]");
+			var $target = $("[data-id='"+tem+"']");
 			if(!part || part == tem){
 				if($target.length == 0){
 					var $newitem = $("<div data-id='"+tem+"'></div>");

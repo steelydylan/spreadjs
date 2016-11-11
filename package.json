@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "jquery": "^3.1.1",
-    "stringify": "^5.1.0"
+    "stringify": "^5.1.0",
+    "zepto-browserify": "^1.1.6-1"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
