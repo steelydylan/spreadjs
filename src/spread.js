@@ -118,6 +118,12 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		});
 		return arr;
 	},
+	getSelectedPoint:function(){
+		var arr = this.getSelectedPoints();
+		if(arr && arr[0]){
+			return arr[0];
+		}
+	},
 	getAllPoints:function(){
 		var arr = [];
 		var self = this;
@@ -350,7 +356,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			return;
 		}
 		this.unselectCells();
-		this.contextmenu(); 
+		this.contextmenu();
 		this.data.mode = "row";
 		this.data.selectedRowNo = -1;
 		this.data.selectedColNo = i;
@@ -419,7 +425,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				if(selectedno == point.y){
 					cell.x = point.x;
 					insertCells.push(cell);
-				} 
+				}
 			}
 		});
 		insertCells.sort(function(a,b){
@@ -668,6 +674,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		this.update();
 	},
 	splitCell:function(){
+		var point = this.getSelectedPoint();
 
 	},
 	changeCellTypeTo:function(type){
