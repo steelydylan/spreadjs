@@ -680,7 +680,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 	},
 	splitCell:function(){
 		var point = this.getSelectedPoint();
-
+		
 	},
 	changeCellTypeTo:function(type){
 		if(this.e.type != "click"){

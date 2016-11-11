@@ -13,8 +13,12 @@ gulp.task("js",function(){
     .bundle()
     .pipe(source('spread.js'))
     .pipe(buffer())
-    // .pipe(uglify())
-    .pipe(gulp.dest('./'));
+    .pipe(gulp.dest('./'))
+    .pipe(uglify())
+    .pipe(rename({
+        suffix: '.min'
+    }))
+    .pipe(gulp.dest('./'))
 });
 
 gulp.task("default",function(){

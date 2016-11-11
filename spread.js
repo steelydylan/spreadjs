@@ -2039,7 +2039,7 @@ aTemplate.View = aTemplate.createClass({
 		for(var i = 0,n = templates.length; i < n; i++){
 			var temp = templates[i];
 			if(!part || part == temp){
-				var $template = $("[data-id="+temp+"]");
+				var $template = $("[data-id='"+temp+"']");
 				$template.find("[data-bind]").each(function(){
 					var data = that.getDataByString($(this).data("bind"));
 					if($(this).attr("type") == "checkbox" || $(this).attr("type") == "radio"){
@@ -2788,7 +2788,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 	},
 	splitCell:function(){
 		var point = this.getSelectedPoint();
-
+		
 	},
 	changeCellTypeTo:function(type){
 		if(this.e.type != "click"){
