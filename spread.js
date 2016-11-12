@@ -2787,8 +2787,49 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		this.update();
 	},
 	splitCell:function(){
-		var point = this.getSelectedPoint();
-		
+		if(this.e.type != "click"){
+			return;
+		}
+		var selectedPoint = this.getSelectedPoint();
+		var bound = {x:0,y:selectedPoint.y,width:selectedPoint.x,height:selectedPoint.height};
+		var points = this.getAllPoints();
+		var currentCell = this.getCellByPos(selectedPoint.x,selectedPoint.y);
+		var width = parseInt(currentCell.colspan);
+		var self = this;
+		var targets = [];
+		var cells = [];
+		var rows = [];
+		points.forEach(function(point){
+			if (self.hitTest(bound,point)) {
+				var index = self.getCellIndexByPos(point.x,point.y);
+				var cell = self.getCellByPos(point.x,point.y);
+				targets.push({index:index,cell:cell});
+			}
+		});
+		targets.forEach(function(item){
+			var row = item.index.row - 1;
+			if(!rows[row]){
+				rows[row] = [];
+			}
+			rows[row].push(item);
+		});
+		for(var i = 1, n = rows.length; i < n; i++){
+			rows[i].sort(function(a,b){
+				if(a.index.col > b.index.col){
+					return 1;
+				}else{
+					return -1;
+				}
+			});
+		}
+		rows.forEach(function(row){
+			var index = row[row.length - 1].index;
+			for(var i = 0, n = width; i < n; i++){
+				self.insertCellAt(index.row,index.col+1,{type:"td",colspan:1,rowspan:1,value:""});
+			}
+		});
+		this.removeCell(currentCell);
+		this.update();
 	},
 	changeCellTypeTo:function(type){
 		if(this.e.type != "click"){
@@ -2834,7 +2875,7 @@ global["Spread"] = Spread;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./aTemplate.js":2,"./return-table.html":3,"./spread.css":4,"./table.html":6,"./table2md.js":7,"zepto-browserify":1}],6:[function(require,module,exports){
-module.exports = "<!-- BEGIN showBtnList:exist -->\n<div class=\"spread-table-btn-list\">\n\t<button class=\"spread-table-btn\" data-action=\"mergeCells\"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></button>\n\t<button class=\"spread-table-btn\" data-action=\"changeCellTypeTo(td)\">td</button>\n\t<button class=\"spread-table-btn\" data-action=\"changeCellTypeTo(th)\">th</button>\n\t<button class=\"spread-table-btn\" data-action=\"align(left)\"><i class=\"fa fa-align-left\"></i></button>\n\t<button class=\"spread-table-btn\" data-action=\"align(center)\"><i class=\"fa fa-align-center\"></i></button>\n\t<button class=\"spread-table-btn\" data-action=\"align(right)\"><i class=\"fa fa-align-right\"></i></button>\n</div>\n<!-- END showBtnList:exist -->\n<div class=\"spread-table-wrapper\">\n\t<table class=\"spread-table\">\n\t\t<tr class=\"spread-table-header js-table-header\">\n\t\t\t<th class=\"spread-table-first\"></th>\n\t\t\t<!-- BEGIN highestRow:loop -->\n\t\t\t<th data-action=\"selectRow({i})\"<!-- \\BEGIN selectedRowNo:touch#{i} -->class=\"selected\"<!-- \\END selectedRowNo:touch#{i} -->>{i}[noToEn]<span class=\"spread-table-toggle-btn\" data-action=\"selectRowViaBtn({i})\"></span></th>\n\t\t\t<!-- END highestRow:loop -->\n\t\t</tr>\n\t\t<!-- BEGIN row:loop -->\n\t\t<tr>\n\t\t\t<th class=\"spread-table-side js-table-side<!-- \\BEGIN selectedColNo:touch#{i} --> selected<!-- \\END selectedColNo:touch#{i} -->\"data-action=\"selectCol({i})\">{i}<span class=\"spread-table-toggle-btn\" data-action=\"selectColViaBtn({i})\"></span></th>\n\t\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->spread-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> spread-table-th<!-- END \\type:touch#th -->\"><div class='spread-table-editable \\{align\\}' contenteditable>\\{value\\}</div><div class='spread-table-pseudo'></div></td>\n\t\t\t<!-- \\END row.{i}.col:loop -->\n\t\t</tr>\n\t\t<!-- END row:loop -->\n\t</table>\n\t<!-- BEGIN showMenu:exist -->\n\t<ul class=\"spread-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t\t<!-- BEGIN mode:touch#cell -->\n\t\t<li data-action=\"mergeCells\"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></li>\n\t\t<li data-action=\"changeCellTypeTo(th)\"><!-- BEGIN lang:touch#ja -->thに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to th<!-- END lang:touch#en --></li>\n\t\t<li data-action=\"changeCellTypeTo(td)\"><!-- BEGIN lang:touch#ja -->tdに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to td<!-- END lang:touch#en --></li>\n\t\t<li data-action=\"align(left)\"><!-- BEGIN lang:touch#ja -->左寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align left<!-- END lang:touch#en --></li>\n\t\t<li data-action=\"align(center)\"><!-- BEGIN lang:touch#ja -->中央寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align center<!-- END lang:touch#en --></li>\n\t\t<li data-action=\"align(right)\"><!-- BEGIN lang:touch#ja -->右寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align right<!-- END lang:touch#en --></li>\n\t\t<!-- END mode:touch#cell -->\n\t\t<!-- BEGIN mode:touch#col -->\n\t\t<li data-action=\"insertColLeft({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->左に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the left<!-- END lang:touch#en --></li>\n\t\t<li data-action=\"insertColRight({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->右に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the right<!-- END lang:touch#en --></li>\n\t\t<li data-action=\"removeCol({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->列を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove column<!-- END lang:touch#en --></li>\n\t\t<!-- END mode:touch#col -->\n\t\t<!-- BEGIN mode:touch#row -->\n\t\t<li data-action=\"insertRowAbove({selectedColNo})\"><!-- BEGIN lang:touch#ja -->上に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row above<!-- END lang:touch#en --></li>\n\t\t<li data-action=\"insertRowBelow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->下に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row below<!-- END lang:touch#en --></li>\t\n\t\t<li data-action=\"removeRow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->行を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove row<!-- END lang:touch#en --></li>\n\t\t<!-- END mode:touch#row -->\n\t</ul>\n\t<!-- END showMenu:exist -->\n\t<!-- BEGIN selectArea:exist -->\n\t<!-- END selectArea:exist -->\n</div>";
+module.exports = "<!-- BEGIN showBtnList:exist -->\n<div class=\"spread-table-btn-list\">\n\t<button class=\"spread-table-btn\" data-action=\"mergeCells\"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></button>\n\t<button class=\"spread-table-btn\" data-action=\"changeCellTypeTo(td)\">td</button>\n\t<button class=\"spread-table-btn\" data-action=\"changeCellTypeTo(th)\">th</button>\n\t<button class=\"spread-table-btn\" data-action=\"align(left)\"><i class=\"fa fa-align-left\"></i></button>\n\t<button class=\"spread-table-btn\" data-action=\"align(center)\"><i class=\"fa fa-align-center\"></i></button>\n\t<button class=\"spread-table-btn\" data-action=\"align(right)\"><i class=\"fa fa-align-right\"></i></button>\n</div>\n<!-- END showBtnList:exist -->\n<div class=\"spread-table-wrapper\">\n\t<table class=\"spread-table\">\n\t\t<tr class=\"spread-table-header js-table-header\">\n\t\t\t<th class=\"spread-table-first\"></th>\n\t\t\t<!-- BEGIN highestRow:loop -->\n\t\t\t<th data-action=\"selectRow({i})\"<!-- \\BEGIN selectedRowNo:touch#{i} -->class=\"selected\"<!-- \\END selectedRowNo:touch#{i} -->>{i}[noToEn]<span class=\"spread-table-toggle-btn\" data-action=\"selectRowViaBtn({i})\"></span></th>\n\t\t\t<!-- END highestRow:loop -->\n\t\t</tr>\n\t\t<!-- BEGIN row:loop -->\n\t\t<tr>\n\t\t\t<th class=\"spread-table-side js-table-side<!-- \\BEGIN selectedColNo:touch#{i} --> selected<!-- \\END selectedColNo:touch#{i} -->\"data-action=\"selectCol({i})\">{i}<span class=\"spread-table-toggle-btn\" data-action=\"selectColViaBtn({i})\"></span></th>\n\t\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->spread-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> spread-table-th<!-- END \\type:touch#th -->\"><div class='spread-table-editable \\{align\\}' contenteditable>\\{value\\}</div><div class='spread-table-pseudo'></div></td>\n\t\t\t<!-- \\END row.{i}.col:loop -->\n\t\t</tr>\n\t\t<!-- END row:loop -->\n\t</table>\n\t<!-- BEGIN showMenu:exist -->\n\t<ul class=\"spread-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t\t<!-- BEGIN mode:touch#cell -->\n\t\t<li data-action=\"mergeCells\"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></li>\n\t\t<li data-action=\"changeCellTypeTo(th)\"><!-- BEGIN lang:touch#ja -->thに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to th<!-- END lang:touch#en --></li>\n\t\t<li data-action=\"changeCellTypeTo(td)\"><!-- BEGIN lang:touch#ja -->tdに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to td<!-- END lang:touch#en --></li>\n\t\t<li data-action=\"align(left)\"><!-- BEGIN lang:touch#ja -->左寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align left<!-- END lang:touch#en --></li>\n\t\t<li data-action=\"align(center)\"><!-- BEGIN lang:touch#ja -->中央寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align center<!-- END lang:touch#en --></li>\n\t\t<li data-action=\"align(right)\"><!-- BEGIN lang:touch#ja -->右寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align right<!-- END lang:touch#en --></li>\n\t\t<li data-action=\"splitCell()\"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></li>\n\t\t<!-- END mode:touch#cell -->\n\t\t<!-- BEGIN mode:touch#col -->\n\t\t<li data-action=\"insertColLeft({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->左に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the left<!-- END lang:touch#en --></li>\n\t\t<li data-action=\"insertColRight({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->右に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the right<!-- END lang:touch#en --></li>\n\t\t<li data-action=\"removeCol({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->列を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove column<!-- END lang:touch#en --></li>\n\t\t<!-- END mode:touch#col -->\n\t\t<!-- BEGIN mode:touch#row -->\n\t\t<li data-action=\"insertRowAbove({selectedColNo})\"><!-- BEGIN lang:touch#ja -->上に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row above<!-- END lang:touch#en --></li>\n\t\t<li data-action=\"insertRowBelow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->下に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row below<!-- END lang:touch#en --></li>\t\n\t\t<li data-action=\"removeRow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->行を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove row<!-- END lang:touch#en --></li>\n\t\t<!-- END mode:touch#row -->\n\t</ul>\n\t<!-- END showMenu:exist -->\n\t<!-- BEGIN selectArea:exist -->\n\t<!-- END selectArea:exist -->\n</div>";
 
 },{}],7:[function(require,module,exports){
 var $ = require("zepto-browserify").$;

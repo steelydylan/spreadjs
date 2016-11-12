@@ -679,8 +679,49 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		this.update();
 	},
 	splitCell:function(){
-		var point = this.getSelectedPoint();
-		
+		if(this.e.type != "click"){
+			return;
+		}
+		var selectedPoint = this.getSelectedPoint();
+		var bound = {x:0,y:selectedPoint.y,width:selectedPoint.x,height:selectedPoint.height};
+		var points = this.getAllPoints();
+		var currentCell = this.getCellByPos(selectedPoint.x,selectedPoint.y);
+		var width = parseInt(currentCell.colspan);
+		var self = this;
+		var targets = [];
+		var cells = [];
+		var rows = [];
+		points.forEach(function(point){
+			if (self.hitTest(bound,point)) {
+				var index = self.getCellIndexByPos(point.x,point.y);
+				var cell = self.getCellByPos(point.x,point.y);
+				targets.push({index:index,cell:cell});
+			}
+		});
+		targets.forEach(function(item){
+			var row = item.index.row - 1;
+			if(!rows[row]){
+				rows[row] = [];
+			}
+			rows[row].push(item);
+		});
+		for(var i = 1, n = rows.length; i < n; i++){
+			rows[i].sort(function(a,b){
+				if(a.index.col > b.index.col){
+					return 1;
+				}else{
+					return -1;
+				}
+			});
+		}
+		rows.forEach(function(row){
+			var index = row[row.length - 1].index;
+			for(var i = 0, n = width; i < n; i++){
+				self.insertCellAt(index.row,index.col+1,{type:"td",colspan:1,rowspan:1,value:""});
+			}
+		});
+		this.removeCell(currentCell);
+		this.update();
 	},
 	changeCellTypeTo:function(type){
 		if(this.e.type != "click"){
