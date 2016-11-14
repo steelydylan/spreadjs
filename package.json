@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "clone": "^2.0.0",
     "jquery": "^3.1.1",
     "stringify": "^5.1.0",
     "zepto-browserify": "^1.1.6-1"

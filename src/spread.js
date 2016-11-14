@@ -2,6 +2,7 @@
 var aTemplate = require("./aTemplate.js");
 var $ = require("zepto-browserify").$;
 var toMarkdown = require("./table2md.js");
+var clone = require('clone');
 var template = require("./table.html");
 var returnTable = require("./return-table.html");
 var style = require("./spread.css");
@@ -15,7 +16,6 @@ var defs = {
 var Spread = aTemplate.createClass(aTemplate.View,{
 	initialize:function(ele,option){
 		this.id = this.getRandText(10);
-		$(ele).wrap("<div data-id='"+this.id+"'></div>");
 		this.addTemplate(template,this.id);
 		this.inherit();
 		this.data = $.extend({},defs,option);
@@ -25,6 +25,9 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		this.data.showBtnList = true;
 		this.data.row = this.parse($(ele).html());
 		this.data.highestRow = this.highestRow;
+		this.data.history = [];
+		this.data.history.push(clone(this.data.row));
+		$(ele).wrap("<div data-id='"+this.id+"'></div>");
 		$(ele).remove();
 		this.update();
 	},
@@ -302,6 +305,19 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			this.afterRendered();
 		}
 	},
+	//n個前の状況に戻す
+	backToState: function(state){
+		if(this.e.type != "click"){
+			return;
+		}
+		console.log(this.data.history);
+		var data = this.data.history.splice(-1*parseInt(state));
+		console.log(data);
+		if(data && data[0]){
+			this.data.row = data[0];
+			this.update();
+		}
+	},
 	//行の追加
 	insertRow: function(a,row){
 		if(this.data.row[a]){
@@ -519,6 +535,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				}
 			}
 		});
+		this.data.history.push(clone(this.data.row));
 		this.update();
 	},
 	insertColLeft:function(selectedno){
@@ -559,6 +576,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 				}
 			}
 		});
+		this.data.history.push(clone(this.data.row));
 		this.update();
 	},
 	insertRowBelow:function(selectedno){
@@ -611,6 +629,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			}
 		});
 		this.insertRow(selectedno+1,newRow);
+		this.data.history.push(clone(this.data.row));
 		this.update();
 	},
 	insertRowAbove:function(selectedno){
@@ -663,6 +682,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			}
 		});
 		this.insertRow(selectedno,newRow);
+		this.data.history.push(clone(this.data.row));
 		this.update();
 	},
 	mergeCells:function(){
@@ -676,6 +696,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 		cell.colspan = point.width;
 		cell.rowspan = point.height;
 		this.data.showMenu = false;
+		this.data.history.push(clone(this.data.row));
 		this.update();
 	},
 	splitCell:function(){
@@ -721,6 +742,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			}
 		});
 		this.removeCell(currentCell);
+		this.data.history.push(clone(this.data.row));
 		this.update();
 	},
 	changeCellTypeTo:function(type){
@@ -735,6 +757,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			});
 		});
 		this.data.showMenu = false;
+		this.data.history.push(clone(this.data.row));
 		this.update();
 	},
 	align:function(align){
@@ -749,6 +772,7 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 			});
 		});
 		this.data.showMenu = false;
+		this.data.history.push(clone(this.data.row));
 		this.update();
 	},
 	convert:{
