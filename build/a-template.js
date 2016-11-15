@@ -1,0 +1,1 @@
+console.error("\n/Users/horigodai/Develop/Projects/spreadjs/src/table.html:2\n<div class=\"spread-table-btn-list\">\n^\nParseError: Unexpected token");

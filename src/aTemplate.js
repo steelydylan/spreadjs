@@ -10,6 +10,8 @@ var aTemplate = function(){
 		window[key] = aTemplate[key];
 	}
 };
+var eventType = "input click change keydown contextmenu mouseup mousedown mousemove";
+var dataAction = eventType.replace(/([a-z]+)/g,"[data-action-$1],") + "[data-action]";
 aTemplate.createClass = function (superClass, obj) {
 	var newClass = function () {
 		this.initialize.apply(this, arguments);
@@ -72,18 +74,31 @@ $(document).on("input change click","[data-bind]",function(e){
 		}
 	}
 });
-$(document).on("input click change keydown contextmenu mouseup mousedown mousemove","[data-action]",function(e){
+$(document).on(eventType,dataAction,function(e){
 	if(e.type == "click" && $(e.target).is("select")){
 		return;
 	}
 	if(e.type == "input" && $(e.target).attr("type") == "button"){
 		return;
 	}
-	var string = $(this).data("action");
+	var events = eventType.split(" ");
+	var $self = $(this);
+	var action = "action";
+	events.forEach(function(event){
+		if ($self.data("action-"+event)) {
+			if(e.type === event){
+				action += "-"+event;
+			}
+		}
+	});
+	var string = $self.data(action);
+	if(!string){
+		return;
+	}
 	var action = string.replace(/\(.*?\);?/,"");
 	var parameter = string.replace(/(.*?)\((.*?)\);?/,"$2");
 	var pts = parameter.split(",");//引き数
-	var id = $(this).parents("[data-id]").data("id");
+	var id = $self.parents("[data-id]").data("id");
 	if(id){
 		var obj = aTemplate.getObjectById(id);
 		obj.e = e;

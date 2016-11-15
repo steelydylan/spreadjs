@@ -1,17 +1,22 @@
 {
+  "name": "Spread",
+  "version": "0.0.1",
   "dependencies": {
+    "a-template": "0.0.2",
     "clone": "^2.0.0",
     "jquery": "^3.1.1",
     "stringify": "^5.1.0",
     "zepto-browserify": "^1.1.6-1"
   },
+  "scripts": {
+    "build": "browserify ./src/index.js -t [ babelify --presets [ es2015 ]] -t [ stringify --extensions [.html .css] ]  --standalone Spread -o ./build/spread.js",
+    "build:watch": "watchify ./src/index.js -t [ babelify --presets [ es2015 ]] -t [ stringify --extensions [.html .css] ]  --standalone Spread -o ./build/spread.js"
+  },
+  "main": "./src/index.js",
   "devDependencies": {
-    "browserify": "^13.1.0",
-    "gulp": "^3.9.1",
-    "gulp-rename": "^1.2.2",
-    "gulp-uglify": "^2.0.0",
-    "jquerify": "^1.1.0",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "babel-preset-es2015": "^6.18.0",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.1",
+    "watchify": "^3.7.0"
   }
 }

@@ -1,5 +1,4 @@
-(function(global) {
-var aTemplate = require("./aTemplate.js");
+var aTemplate = require("a-template");
 var $ = require("zepto-browserify").$;
 var toMarkdown = require("./table2md.js");
 var clone = require('clone');
@@ -782,9 +781,4 @@ var Spread = aTemplate.createClass(aTemplate.View,{
 	}
 });
 
-if ("process" in global) {
-	module["exports"] = Spread;
-}
-global["Spread"] = Spread;
-
-})((this || 0).self || global);
+window.Spread = Spread;

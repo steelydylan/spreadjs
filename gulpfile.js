@@ -8,7 +8,7 @@ var buffer = require('vinyl-buffer');
 var stringify = require('stringify');
 
 gulp.task("js",function(){
-    browserify('./src/spread.js')
+    browserify('./src/index.js')
     .transform(stringify([".html",".css"]))
     .bundle()
     .pipe(source('spread.js'))
