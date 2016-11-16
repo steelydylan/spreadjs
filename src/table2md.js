@@ -4,7 +4,7 @@ var table2md = function(html){
 	var ret = "";
 	$table.find("tr").each(function(i){
 		ret += "| ";
-		$children = $(this).children();
+		var $children = $(this).children();
 		$children.each(function(){
 			ret += $(this).html();
 			ret += " | ";
@@ -19,5 +19,4 @@ var table2md = function(html){
 	});
 	return ret;
 };
-
 module.exports = table2md;
