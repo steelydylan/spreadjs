@@ -12,6 +12,7 @@ var defs = {
 	showBtnList:true,
 	lang:"en"
 }
+
 class Spread extends aTemplate {
 
 	constructor (ele,option){

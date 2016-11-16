@@ -4034,10 +4034,9 @@ var aTemplate = function () {
 			this.data.aTemplate_id = text;
 		}
 	}, {
-		key: "getDataByString",
-		value: function getDataByString(s) {
-			var o = this.data;
-			s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+		key: "getDataFromObj",
+		value: function getDataFromObj(s, o) {
+			s = s.replace(/\[([a-zA-Z0-9._-]+)\]/g, '.$1'); // convert indexes to properties
 			s = s.replace(/^\./, ''); // strip leading dot
 			var a = s.split('.');
 			while (a.length) {
@@ -4049,6 +4048,12 @@ var aTemplate = function () {
 				}
 			}
 			return o;
+		}
+	}, {
+		key: "getDataByString",
+		value: function getDataByString(s) {
+			var o = this.data;
+			return this.getDataFromObj(s, o);
 		}
 	}, {
 		key: "updateDataByString",
@@ -4079,19 +4084,19 @@ var aTemplate = function () {
 		key: "resolveBlock",
 		value: function resolveBlock(html, item, i) {
 			var that = this;
-			var touchs = html.match(/<!-- BEGIN (\w+):touch#(\w+) -->/g);
-			var touchnots = html.match(/<!-- BEGIN (\w+):touchnot#(\w+) -->/g);
-			var exists = html.match(/<!-- BEGIN (\w+):exist -->/g);
-			var empties = html.match(/<!-- BEGIN (\w+):empty -->/g);
+			var touchs = html.match(/<!-- BEGIN ([a-zA-Z0-9._-]+):touch#([a-zA-Z0-9._-]+) -->/g);
+			var touchnots = html.match(/<!-- BEGIN ([a-zA-Z0-9._-]+):touchnot#([a-zA-Z0-9._-]+) -->/g);
+			var exists = html.match(/<!-- BEGIN ([a-zA-Z0-9._-]+):exist -->/g);
+			var empties = html.match(/<!-- BEGIN ([a-zA-Z0-9._-]+):empty -->/g);
 			/*タッチブロック解決*/
 			if (touchs) {
 				for (var k = 0, n = touchs.length; k < n; k++) {
 					var start = touchs[k];
-					start = start.replace(/(\w+):touch#(\w+)/, "($1):touch#($2)");
+					start = start.replace(/([a-zA-Z0-9._-]+):touch#([a-zA-Z0-9._-]+)/, "($1):touch#($2)");
 					var end = start.replace(/BEGIN/, "END");
 					var reg = new RegExp(start + "(([\\n\\r\\t]|.)*?)" + end, "g");
 					html = html.replace(reg, function (m, key2, val, next) {
-						var itemkey = typeof item[key2] === "function" ? item[key2].apply(that) : item[key2];
+						var itemkey = typeof item[key2] === "function" ? item[key2].apply(that) : that.getDataFromObj(key2, item);
 						if (itemkey == val) {
 							return next;
 						} else {
@@ -4104,11 +4109,11 @@ var aTemplate = function () {
 			if (touchnots) {
 				for (var k = 0, n = touchnots.length; k < n; k++) {
 					var start = touchnots[k];
-					start = start.replace(/(\w+):touchnot#(\w+)/, "($1):touchnot#($2)");
+					start = start.replace(/([a-zA-Z0-9._-]+):touchnot#([a-zA-Z0-9._-]+)/, "($1):touchnot#($2)");
 					var end = start.replace(/BEGIN/, "END");
 					var reg = new RegExp(start + "(([\\n\\r\\t]|.)*?)" + end, "g");
 					html = html.replace(reg, function (m, key2, val, next) {
-						var itemkey = typeof item[key2] === "function" ? item[key2].apply(that) : item[key2];
+						var itemkey = typeof item[key2] === "function" ? item[key2].apply(that) : that.getDataFromObj(key2, item);
 						if (itemkey != val) {
 							return next;
 						} else {
@@ -4121,11 +4126,11 @@ var aTemplate = function () {
 			if (exists) {
 				for (var k = 0, n = exists.length; k < n; k++) {
 					var start = exists[k];
-					start = start.replace(/(\w+):exist/, "($1):exist");
+					start = start.replace(/([a-zA-Z0-9._-]+):exist/, "($1):exist");
 					var end = start.replace(/BEGIN/, "END");
 					var reg = new RegExp(start + "(([\\n\\r\\t]|.)*?)" + end, "g");
 					html = html.replace(reg, function (m, key2, next) {
-						var itemkey = typeof item[key2] === "function" ? item[key2].apply(that) : item[key2];
+						var itemkey = typeof item[key2] === "function" ? item[key2].apply(that) : that.getDataFromObj(key2, item);
 						if (itemkey) {
 							return next;
 						} else {
@@ -4138,11 +4143,11 @@ var aTemplate = function () {
 			if (empties) {
 				for (var k = 0, n = empties.length; k < n; k++) {
 					var start = empties[k];
-					start = start.replace(/(\w+):empty/, "($1):empty");
+					start = start.replace(/([a-zA-Z0-9._-]+):empty/, "($1):empty");
 					var end = start.replace(/BEGIN/, "END");
 					var empty = new RegExp(start + "(([\\n\\r\\t]|.)*?)" + end, "g");
 					html = html.replace(empty, function (m, key2, next) {
-						var itemkey = typeof item[key2] === "function" ? item[key2].apply(that) : item[key2];
+						var itemkey = typeof item[key2] === "function" ? item[key2].apply(that) : that.getDataFromObj(key2, item);
 						if (!itemkey) {
 							return next;
 						} else {
@@ -4152,12 +4157,12 @@ var aTemplate = function () {
 				}
 			}
 			/*変数解決*/
-			html = html.replace(/{(\w+)}(\[(.*?)\])*/g, function (n, key3, key4, converter) {
+			html = html.replace(/{([a-zA-Z0-9._-]+)}(\[([a-zA-Z0-9._-]+)\])*/g, function (n, key3, key4, converter) {
 				var data;
 				if (key3 == "i") {
 					data = i;
 				} else {
-					if (item && item[key3]) {
+					if (item[key3]) {
 						if (typeof item[key3] === "function") {
 							data = item[key3].apply(that);
 						} else {
@@ -4171,20 +4176,8 @@ var aTemplate = function () {
 						}
 					}
 				}
-
-				if (converter && that.convert) {
-					var params = converter.replace(/.*?\((.*?)\)/, "$1");
-					if (params) {
-						converter = converter.replace(/(.*?)\(.*?\)/, "$1");
-						params = params.split(",");
-					} else {
-						params = [];
-					}
-					if (that.convert[converter]) {
-						return that.convert[converter].call(that, data, params);
-					} else {
-						return data;
-					}
+				if (converter && that.convert && that.convert[converter]) {
+					return that.convert[converter].call(that, data);
 				} else {
 					return data;
 				}
@@ -4223,7 +4216,7 @@ var aTemplate = function () {
 	}, {
 		key: "resolveWith",
 		value: function resolveWith(html) {
-			var width = /<!-- BEGIN (\w+):with -->(([\n\r\t]|.)*?)<!-- END (\w+):with -->/g;
+			var width = /<!-- BEGIN ([a-zA-Z0-9._-]+):with -->(([\n\r\t]|.)*?)<!-- END ([a-zA-Z0-9._-]+):with -->/g;
 			html = html.replace(width, function (m, key, val) {
 				m = m.replace(/data\-bind=['"](.*?)['"]/g, "data-bind='" + key + ".$1'");
 				return m;
@@ -4281,9 +4274,12 @@ var aTemplate = function () {
 		}
 	}, {
 		key: "getHtml",
-		value: function getHtml(selector) {
+		value: function getHtml(selector, row) {
 			var $template = $(selector);
 			var html = $template.html();
+			if (row) {
+				html = selector;
+			}
 			if (!html) {
 				return "";
 			}
@@ -4311,6 +4307,9 @@ var aTemplate = function () {
 			var html = this.getHtml();
 			var templates = this.templates;
 			var renderWay = txt || "html";
+			if (this.method && this.method.beforeUpdated) {
+				this.applyMethod("beforeUpdated");
+			}
 			for (var i = 0, n = templates.length; i < n; i++) {
 				var tem = templates[i];
 				var selector = "#" + tem;
@@ -4330,6 +4329,9 @@ var aTemplate = function () {
 				}
 			}
 			this.updateBindingData(part);
+			if (this.onUpdated) {
+				this.onUpdated();
+			}
 			return this;
 		}
 	}, {
@@ -5296,7 +5298,7 @@ var Spread = function (_aTemplate) {
 module.exports = Spread;
 
 },{"./a-template.js":7,"./return-table.html":9,"./spread.css":10,"./table.html":11,"./table2md.js":12,"clone":3,"zepto-browserify":6}],9:[function(require,module,exports){
-module.exports = "<table>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<!-- \\BEGIN type:touch#th -->\n\t\t<th<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 -->>\\{value\\}</th>\n\t\t<!-- \\END type:touch#th -->\n\t\t<!-- \\BEGIN type:touch#td -->\n\t\t<td<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 -->>\\{value\\}</td>\n\t\t<!-- \\END type:touch#td -->\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>";
+module.exports = "<table>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<!-- \\BEGIN type:touch#th -->\n\t\t<th<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 -->>\\{value\\}</th>\n\t\t<!-- \\END type:touch#th -->\n\t\t<!-- \\BEGIN type:touch#td -->\n\t\t<td<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 -->>\\{value\\}</td>\n\t\t<!-- \\END type:touch#td -->\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n";
 
 },{}],10:[function(require,module,exports){
 module.exports = ".spread-table-wrapper {\n\tposition: relative;\n\tz-index: 0;\n\twidth: 100%;\n}\n\n.spread-table-pseudo {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 100%;\n\tz-index: -1;\n}\n\n.spread-table {\n\tborder-collapse: collapse;\n\ttable-layout: fixed;\n\tfont-family: \"Open Sans\", Helvetica, Arial, sans-serif;\n}\n\n.spread-table input {\n\twidth: 100%;\n\theight: 100%;\n\tdisplay: block;\n}\n\n.spread-table td,\n.spread-table th {\n\ttext-align: left;\n\twidth: 100px;\n\theight: 15px;\n\toverflow: hidden;\n\tposition: relative;\n\tz-index: 0;\n\tborder: 1px solid #cccccc;\n}\n\n.spread-table th {\n\tbackground-color: #eee;\n\tfont-weight: normal;\n}\n\n.spread-table .left{\n\ttext-align: left;\n}\n\n.spread-table .right{\n\ttext-align: right;\n}\n\n.spread-table .center{\n\ttext-align: center;\n}\n\n.spread-table .spread-table-th {\n\tbackground-color: #ddd;\n\tfont-weight: bold;\n}\n\n.spread-table .spread-table-selected {\n\tbackground-color: #eaf2f9;\n}\n\n.spread-table-editable {\n\twidth: 100%;\n\theight: 100%;\n}\n\n.spread-table-pseudo {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 100%;\n\tz-index: -1;\n}\n\n.spread-table-menu {\n\tdisplay: block;\n\tlist-style-type: none;\n\tpadding: 0;\n\tmargin: 0;\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\tbackground-color: #fff;\n\tborder: 1px solid #666;\n\tcolor: #474747;\n\tfont-size: 13px;\n}\n\n.spread-table-menu li {\n\tdisplay: block;\n\tfont-size: 14px;\n\tpadding: 5px 7px;\n\tline-height: 1;\n\tborder-bottom: 1px solid #ddd;\n\tcursor: pointer;\n}\n\n.spread-table-menu li:hover {\n\tbackground-color: #eee;\n}\n\n.spread-table-header th {\n\ttext-align: center;\n\tposition: relative;\n}\n\n.spread-table-header .selected{\n\tbackground-color: #eaf2f9;\n}\n\n.spread-table-side.selected{\n\tbackground-color: #eaf2f9;\n}\n\n.spread-table .spread-table-side {\n\ttext-align: center;\n\tposition: relative;\n}\n\n.spread-table-btn-list{\n\tmargin-bottom: 10px;\n\tdisplay: table;\n}\n\n.spread-table-btn{\n\tdisplay: table-cell;\n\tborder-left: none;\n\tborder: 1px solid #D9D9D9;\n\tbackground-color: #F2F2F2;\n\tfont-size: 12px;\n\tpadding: 3px 5px;\n}\n\n.spread-table-btn:first-child{\n\tborder-top-left-radius: 3px;\n\tborder-bottom-left-radius: 3px;\n}\n\n.spread-table-btn:last-child{\n\tborder-top-right-radius: 3px;\n\tborder-bottom-right-radius: 3px;\n}\n\n.spread-table-toggle-btn{\n\tdisplay: inline-block;\n    border: 1px solid #CCC;\n    padding: 5px;\n    position: absolute;\n    right: 5px;\n    top: 5px;\n    cursor: pointer;\n    display: none;\n}\n\n.spread-table-header th:hover .spread-table-toggle-btn{\n\tdisplay: block;\n}\n\n.spread-table-side:hover .spread-table-toggle-btn{\n\tdisplay: block;\n}\n\n.spread-table-toggle-btn:after{\n    content:\"\";\n    display: block;\n    border: solid transparent;\n\tcontent: \" \";\n\theight: 0;\n\twidth: 0;\n\tborder-color: rgba(136, 183, 213, 0);\n    border-top-color: #88b7d5;\n    border-width: 5px;\n    margin-left: -5px;\n    position: absolute;\n    top: 2px;\n    left: 5px;\n}\n\n.spread-table-first{\n\twidth: 15px;\n}\n";
