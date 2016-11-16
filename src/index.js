@@ -1,4 +1,4 @@
-var aTemplate = require("./a-template.js");
+var aTemplate = require("a-template");
 var $ = require("zepto-browserify").$;
 var toMarkdown = require("./table2md.js");
 var clone = require('clone');
