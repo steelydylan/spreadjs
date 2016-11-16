@@ -6069,22 +6069,6 @@ var Spread = function (_aTemplate) {
 			return arr;
 		}
 	}, {
-		key: "getRand",
-		value: function getRand(a, b) {
-			return ~~(Math.random() * (b - a + 1)) + a;
-		}
-	}, {
-		key: "getRandText",
-		value: function getRandText(limit) {
-			var ret = "";
-			var strings = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-			var length = strings.length;
-			for (var i = 0; i < limit; i++) {
-				ret += strings.charAt(Math.floor(this.getRand(0, length)));
-			}
-			return ret;
-		}
-	}, {
 		key: "getCellByIndex",
 		value: function getCellByIndex(x, y) {
 			return $("[data-id='" + this.id + "'] [data-cell-id='" + x + "-" + y + "']");

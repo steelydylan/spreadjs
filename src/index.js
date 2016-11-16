@@ -11,7 +11,7 @@ $("body").append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/f
 var defs = {
 	showBtnList:true,
 	lang:"en"
-}
+} 
 
 class Spread extends aTemplate {
 
@@ -49,20 +49,6 @@ class Spread extends aTemplate {
 			});
 		});
 		return arr;
-	}
-
-	getRand(a,b) {
-		return ~~(Math.random() * (b - a + 1)) + a;
-	}
-
-	getRandText (limit){
-		var ret = "";
-		var strings = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-		var length = strings.length;
-		for(var i = 0; i < limit; i++){
-			ret += strings.charAt(Math.floor(this.getRand(0,length)));
-		}
-		return ret;
 	}
 
 	getCellByIndex(x,y) {
