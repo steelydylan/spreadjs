@@ -331,9 +331,6 @@ class Spread extends aTemplate {
 	}
 	//n個前の状況に戻す
 	backToState(state){
-		if(this.e.type != "click"){
-			return;
-		}
 		console.log(this.data.history);
 		var data = this.data.history.splice(-1*parseInt(state));
 		console.log(data);
@@ -358,14 +355,11 @@ class Spread extends aTemplate {
 	}
 
 	selectRowViaBtn(i){
-		if(this.e.type != "click"){
-			return;
-		}
 		this.unselectCells();
-		this.contextmenu();
 		this.data.mode = "col";
 		this.data.selectedColNo = -1;
 		this.data.selectedRowNo = i;
+		this.contextmenu();
 		this.update();
 	}
 
@@ -400,20 +394,15 @@ class Spread extends aTemplate {
 		this.update();
 	}
 	selectColViaBtn(i){
-		if(this.e.type != "click"){
-			return;
-		}
 		this.unselectCells();
-		this.contextmenu();
 		this.data.mode = "row";
 		this.data.selectedRowNo = -1;
 		this.data.selectedColNo = i;
+		this.contextmenu();
 		this.update();
 	}
+
 	removeCol(selectedno){
-		if(this.e.type != "click"){
-			return;
-		}
 		this.data.showMenu = false;
 		var self = this;
 		var points = this.getAllPoints();
@@ -437,9 +426,6 @@ class Spread extends aTemplate {
 		this.update();
 	}
 	removeRow(selectedno){
-		if(this.e.type != "click"){
-			return;
-		}
 		this.data.showMenu = false;
 		var self = this;
 		var points = this.getAllPoints();
@@ -534,9 +520,6 @@ class Spread extends aTemplate {
 		}
 	}
 	insertColRight(selectedno){
-		if(this.e.type != "click"){
-			return;
-		}
 		this.data.selectedRowNo = parseInt(selectedno);
 		this.data.showMenu = false;
 		var self = this;
@@ -566,9 +549,6 @@ class Spread extends aTemplate {
 		this.update();
 	}
 	insertColLeft(selectedno){
-		if(this.e.type != "click"){
-			return;
-		}
 		this.data.selectedRowNo = parseInt(selectedno)+1;
 		this.data.showMenu = false;
 		var self = this;
@@ -607,9 +587,6 @@ class Spread extends aTemplate {
 		this.update();
 	}
 	insertRowBelow(selectedno){
-		if(this.e.type != "click"){
-			return;
-		}
 		this.data.showMenu = false;
 		this.data.selectedColNo = parseInt(selectedno);
 		var self = this;
@@ -660,9 +637,6 @@ class Spread extends aTemplate {
 		this.update();
 	}
 	insertRowAbove(selectedno){
-		if(this.e.type != "click"){
-			return;
-		}
 		this.data.showMenu = false;
 		this.data.selectedColNo = parseInt(selectedno)+1;
 		var self = this;
@@ -713,9 +687,6 @@ class Spread extends aTemplate {
 		this.update();
 	}
 	mergeCells(){
-		if(this.e.type != "click"){
-			return;
-		}
 		var points = this.getSelectedPoints();
 		var point = this.getLargePoint.apply(null,points);
 		var cell = this.getCellByPos(point.x,point.y);
@@ -727,9 +698,6 @@ class Spread extends aTemplate {
 		this.update();
 	}
 	splitCell(){
-		if(this.e.type != "click"){
-			return;
-		}
 		var selectedPoint = this.getSelectedPoint();
 		var bound = {x:0,y:selectedPoint.y,width:selectedPoint.x,height:selectedPoint.height};
 		var points = this.getAllPoints();
@@ -773,9 +741,6 @@ class Spread extends aTemplate {
 		this.update();
 	}
 	changeCellTypeTo(type){
-		if(this.e.type != "click"){
-			return;
-		}
 		this.data.row.forEach(function(item,i){
 			item.col.forEach(function(obj,t){
 				if(obj.selected){
@@ -788,9 +753,6 @@ class Spread extends aTemplate {
 		this.update();
 	}
 	align(align){
-		if(this.e.type != "click"){
-			return;
-		}
 		this.data.row.forEach(function(item,i){
 			item.col.forEach(function(obj,t){
 				if(obj.selected){

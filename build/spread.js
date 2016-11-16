@@ -4780,9 +4780,6 @@ var Spread = function (_aTemplate) {
 	}, {
 		key: "backToState",
 		value: function backToState(state) {
-			if (this.e.type != "click") {
-				return;
-			}
 			console.log(this.data.history);
 			var data = this.data.history.splice(-1 * parseInt(state));
 			console.log(data);
@@ -4812,14 +4809,11 @@ var Spread = function (_aTemplate) {
 	}, {
 		key: "selectRowViaBtn",
 		value: function selectRowViaBtn(i) {
-			if (this.e.type != "click") {
-				return;
-			}
 			this.unselectCells();
-			this.contextmenu();
 			this.data.mode = "col";
 			this.data.selectedColNo = -1;
 			this.data.selectedRowNo = i;
+			this.contextmenu();
 			this.update();
 		}
 	}, {
@@ -4859,22 +4853,16 @@ var Spread = function (_aTemplate) {
 	}, {
 		key: "selectColViaBtn",
 		value: function selectColViaBtn(i) {
-			if (this.e.type != "click") {
-				return;
-			}
 			this.unselectCells();
-			this.contextmenu();
 			this.data.mode = "row";
 			this.data.selectedRowNo = -1;
 			this.data.selectedColNo = i;
+			this.contextmenu();
 			this.update();
 		}
 	}, {
 		key: "removeCol",
 		value: function removeCol(selectedno) {
-			if (this.e.type != "click") {
-				return;
-			}
 			this.data.showMenu = false;
 			var self = this;
 			var points = this.getAllPoints();
@@ -4900,9 +4888,6 @@ var Spread = function (_aTemplate) {
 	}, {
 		key: "removeRow",
 		value: function removeRow(selectedno) {
-			if (this.e.type != "click") {
-				return;
-			}
 			this.data.showMenu = false;
 			var self = this;
 			var points = this.getAllPoints();
@@ -5001,9 +4986,6 @@ var Spread = function (_aTemplate) {
 	}, {
 		key: "insertColRight",
 		value: function insertColRight(selectedno) {
-			if (this.e.type != "click") {
-				return;
-			}
 			this.data.selectedRowNo = parseInt(selectedno);
 			this.data.showMenu = false;
 			var self = this;
@@ -5035,9 +5017,6 @@ var Spread = function (_aTemplate) {
 	}, {
 		key: "insertColLeft",
 		value: function insertColLeft(selectedno) {
-			if (this.e.type != "click") {
-				return;
-			}
 			this.data.selectedRowNo = parseInt(selectedno) + 1;
 			this.data.showMenu = false;
 			var self = this;
@@ -5078,9 +5057,6 @@ var Spread = function (_aTemplate) {
 	}, {
 		key: "insertRowBelow",
 		value: function insertRowBelow(selectedno) {
-			if (this.e.type != "click") {
-				return;
-			}
 			this.data.showMenu = false;
 			this.data.selectedColNo = parseInt(selectedno);
 			var self = this;
@@ -5133,9 +5109,6 @@ var Spread = function (_aTemplate) {
 	}, {
 		key: "insertRowAbove",
 		value: function insertRowAbove(selectedno) {
-			if (this.e.type != "click") {
-				return;
-			}
 			this.data.showMenu = false;
 			this.data.selectedColNo = parseInt(selectedno) + 1;
 			var self = this;
@@ -5188,9 +5161,6 @@ var Spread = function (_aTemplate) {
 	}, {
 		key: "mergeCells",
 		value: function mergeCells() {
-			if (this.e.type != "click") {
-				return;
-			}
 			var points = this.getSelectedPoints();
 			var point = this.getLargePoint.apply(null, points);
 			var cell = this.getCellByPos(point.x, point.y);
@@ -5204,9 +5174,6 @@ var Spread = function (_aTemplate) {
 	}, {
 		key: "splitCell",
 		value: function splitCell() {
-			if (this.e.type != "click") {
-				return;
-			}
 			var selectedPoint = this.getSelectedPoint();
 			var bound = { x: 0, y: selectedPoint.y, width: selectedPoint.x, height: selectedPoint.height };
 			var points = this.getAllPoints();
@@ -5252,9 +5219,6 @@ var Spread = function (_aTemplate) {
 	}, {
 		key: "changeCellTypeTo",
 		value: function changeCellTypeTo(type) {
-			if (this.e.type != "click") {
-				return;
-			}
 			this.data.row.forEach(function (item, i) {
 				item.col.forEach(function (obj, t) {
 					if (obj.selected) {
@@ -5269,9 +5233,6 @@ var Spread = function (_aTemplate) {
 	}, {
 		key: "align",
 		value: function align(_align) {
-			if (this.e.type != "click") {
-				return;
-			}
 			this.data.row.forEach(function (item, i) {
 				item.col.forEach(function (obj, t) {
 					if (obj.selected) {
@@ -5304,7 +5265,7 @@ module.exports = "<table>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<!-- \\BEGIN r
 module.exports = ".spread-table-wrapper {\n\tposition: relative;\n\tz-index: 0;\n\twidth: 100%;\n}\n\n.spread-table-pseudo {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 100%;\n\tz-index: -1;\n}\n\n.spread-table {\n\tborder-collapse: collapse;\n\ttable-layout: fixed;\n\tfont-family: \"Open Sans\", Helvetica, Arial, sans-serif;\n}\n\n.spread-table input {\n\twidth: 100%;\n\theight: 100%;\n\tdisplay: block;\n}\n\n.spread-table td,\n.spread-table th {\n\ttext-align: left;\n\twidth: 100px;\n\theight: 15px;\n\toverflow: hidden;\n\tposition: relative;\n\tz-index: 0;\n\tborder: 1px solid #cccccc;\n}\n\n.spread-table th {\n\tbackground-color: #eee;\n\tfont-weight: normal;\n}\n\n.spread-table .left{\n\ttext-align: left;\n}\n\n.spread-table .right{\n\ttext-align: right;\n}\n\n.spread-table .center{\n\ttext-align: center;\n}\n\n.spread-table .spread-table-th {\n\tbackground-color: #ddd;\n\tfont-weight: bold;\n}\n\n.spread-table .spread-table-selected {\n\tbackground-color: #eaf2f9;\n}\n\n.spread-table-editable {\n\twidth: 100%;\n\theight: 100%;\n}\n\n.spread-table-pseudo {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 100%;\n\tz-index: -1;\n}\n\n.spread-table-menu {\n\tdisplay: block;\n\tlist-style-type: none;\n\tpadding: 0;\n\tmargin: 0;\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\tbackground-color: #fff;\n\tborder: 1px solid #666;\n\tcolor: #474747;\n\tfont-size: 13px;\n}\n\n.spread-table-menu li {\n\tdisplay: block;\n\tfont-size: 14px;\n\tpadding: 5px 7px;\n\tline-height: 1;\n\tborder-bottom: 1px solid #ddd;\n\tcursor: pointer;\n}\n\n.spread-table-menu li:hover {\n\tbackground-color: #eee;\n}\n\n.spread-table-header th {\n\ttext-align: center;\n\tposition: relative;\n}\n\n.spread-table-header .selected{\n\tbackground-color: #eaf2f9;\n}\n\n.spread-table-side.selected{\n\tbackground-color: #eaf2f9;\n}\n\n.spread-table .spread-table-side {\n\ttext-align: center;\n\tposition: relative;\n}\n\n.spread-table-btn-list{\n\tmargin-bottom: 10px;\n\tdisplay: table;\n}\n\n.spread-table-btn{\n\tdisplay: table-cell;\n\tborder-left: none;\n\tborder: 1px solid #D9D9D9;\n\tbackground-color: #F2F2F2;\n\tfont-size: 12px;\n\tpadding: 3px 5px;\n}\n\n.spread-table-btn:first-child{\n\tborder-top-left-radius: 3px;\n\tborder-bottom-left-radius: 3px;\n}\n\n.spread-table-btn:last-child{\n\tborder-top-right-radius: 3px;\n\tborder-bottom-right-radius: 3px;\n}\n\n.spread-table-toggle-btn{\n\tdisplay: inline-block;\n    border: 1px solid #CCC;\n    padding: 5px;\n    position: absolute;\n    right: 5px;\n    top: 5px;\n    cursor: pointer;\n    display: none;\n}\n\n.spread-table-header th:hover .spread-table-toggle-btn{\n\tdisplay: block;\n}\n\n.spread-table-side:hover .spread-table-toggle-btn{\n\tdisplay: block;\n}\n\n.spread-table-toggle-btn:after{\n    content:\"\";\n    display: block;\n    border: solid transparent;\n\tcontent: \" \";\n\theight: 0;\n\twidth: 0;\n\tborder-color: rgba(136, 183, 213, 0);\n    border-top-color: #88b7d5;\n    border-width: 5px;\n    margin-left: -5px;\n    position: absolute;\n    top: 2px;\n    left: 5px;\n}\n\n.spread-table-first{\n\twidth: 15px;\n}\n";
 
 },{}],11:[function(require,module,exports){
-module.exports = "<!-- BEGIN showBtnList:exist -->\n<div class=\"spread-table-btn-list\">\n\t<button class=\"spread-table-btn\" data-action=\"backToState(1)\"><i class=\"fa fa-rotate-left\"></i></button>\n\t<button class=\"spread-table-btn\" data-action=\"mergeCells\"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></button>\n\t<button class=\"spread-table-btn\" data-action=\"changeCellTypeTo(td)\">td</button>\n\t<button class=\"spread-table-btn\" data-action=\"changeCellTypeTo(th)\">th</button>\n\t<button class=\"spread-table-btn\" data-action=\"align(left)\"><i class=\"fa fa-align-left\"></i></button>\n\t<button class=\"spread-table-btn\" data-action=\"align(center)\"><i class=\"fa fa-align-center\"></i></button>\n\t<button class=\"spread-table-btn\" data-action=\"align(right)\"><i class=\"fa fa-align-right\"></i></button>\n</div>\n<!-- END showBtnList:exist -->\n<div class=\"spread-table-wrapper\">\n\t<table class=\"spread-table\">\n\t\t<tr class=\"spread-table-header js-table-header\">\n\t\t\t<th class=\"spread-table-first\"></th>\n\t\t\t<!-- BEGIN highestRow:loop -->\n\t\t\t<th data-action=\"selectRow({i})\"<!-- \\BEGIN selectedRowNo:touch#{i} -->class=\"selected\"<!-- \\END selectedRowNo:touch#{i} -->>{i}[noToEn]<span class=\"spread-table-toggle-btn\" data-action=\"selectRowViaBtn({i})\"></span></th>\n\t\t\t<!-- END highestRow:loop -->\n\t\t</tr>\n\t\t<!-- BEGIN row:loop -->\n\t\t<tr>\n\t\t\t<th class=\"spread-table-side js-table-side<!-- \\BEGIN selectedColNo:touch#{i} --> selected<!-- \\END selectedColNo:touch#{i} -->\"data-action=\"selectCol({i})\">{i}<span class=\"spread-table-toggle-btn\" data-action=\"selectColViaBtn({i})\"></span></th>\n\t\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->spread-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> spread-table-th<!-- END \\type:touch#th -->\"><div class='spread-table-editable \\{align\\}' contenteditable>\\{value\\}</div><div class='spread-table-pseudo'></div></td>\n\t\t\t<!-- \\END row.{i}.col:loop -->\n\t\t</tr>\n\t\t<!-- END row:loop -->\n\t</table>\n\t<!-- BEGIN showMenu:exist -->\n\t<ul class=\"spread-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t\t<!-- BEGIN mode:touch#cell -->\n\t\t<li data-action-click=\"mergeCells\"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"changeCellTypeTo(th)\"><!-- BEGIN lang:touch#ja -->thに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to th<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"changeCellTypeTo(td)\"><!-- BEGIN lang:touch#ja -->tdに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to td<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"align(left)\"><!-- BEGIN lang:touch#ja -->左寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align left<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"align(center)\"><!-- BEGIN lang:touch#ja -->中央寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align center<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"align(right)\"><!-- BEGIN lang:touch#ja -->右寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align right<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"splitCell()\"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></li>\n\t\t<!-- END mode:touch#cell -->\n\t\t<!-- BEGIN mode:touch#col -->\n\t\t<li data-action-click=\"insertColLeft({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->左に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the left<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"insertColRight({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->右に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the right<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"removeCol({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->列を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove column<!-- END lang:touch#en --></li>\n\t\t<!-- END mode:touch#col -->\n\t\t<!-- BEGIN mode:touch#row -->\n\t\t<li data-action-click=\"insertRowAbove({selectedColNo})\"><!-- BEGIN lang:touch#ja -->上に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row above<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"insertRowBelow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->下に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row below<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"removeRow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->行を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove row<!-- END lang:touch#en --></li>\n\t\t<!-- END mode:touch#row -->\n\t</ul>\n\t<!-- END showMenu:exist -->\n\t<!-- BEGIN selectArea:exist -->\n\t<!-- END selectArea:exist -->\n</div>\n";
+module.exports = "<!-- BEGIN showBtnList:exist -->\n<div class=\"spread-table-btn-list\">\n\t<button class=\"spread-table-btn\" data-action-click=\"backToState(1)\"><i class=\"fa fa-rotate-left\"></i></button>\n\t<button class=\"spread-table-btn\" data-action-click=\"mergeCells\"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></button>\n\t<button class=\"spread-table-btn\" data-action-click=\"changeCellTypeTo(td)\">td</button>\n\t<button class=\"spread-table-btn\" data-action-click=\"changeCellTypeTo(th)\">th</button>\n\t<button class=\"spread-table-btn\" data-action-click=\"align(left)\"><i class=\"fa fa-align-left\"></i></button>\n\t<button class=\"spread-table-btn\" data-action-click=\"align(center)\"><i class=\"fa fa-align-center\"></i></button>\n\t<button class=\"spread-table-btn\" data-action-click=\"align(right)\"><i class=\"fa fa-align-right\"></i></button>\n</div>\n<!-- END showBtnList:exist -->\n<div class=\"spread-table-wrapper\">\n\t<table class=\"spread-table\">\n\t\t<tr class=\"spread-table-header js-table-header\">\n\t\t\t<th class=\"spread-table-first\"></th>\n\t\t\t<!-- BEGIN highestRow:loop -->\n\t\t\t<th data-action=\"selectRow({i})\"<!-- \\BEGIN selectedRowNo:touch#{i} -->class=\"selected\"<!-- \\END selectedRowNo:touch#{i} -->>{i}[noToEn]<span class=\"spread-table-toggle-btn\" data-action-click=\"selectRowViaBtn({i})\"></span></th>\n\t\t\t<!-- END highestRow:loop -->\n\t\t</tr>\n\t\t<!-- BEGIN row:loop -->\n\t\t<tr>\n\t\t\t<th class=\"spread-table-side js-table-side<!-- \\BEGIN selectedColNo:touch#{i} --> selected<!-- \\END selectedColNo:touch#{i} -->\"data-action=\"selectCol({i})\">{i}<span class=\"spread-table-toggle-btn\" data-action-click=\"selectColViaBtn({i})\"></span></th>\n\t\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->spread-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> spread-table-th<!-- END \\type:touch#th -->\"><div class='spread-table-editable \\{align\\}' contenteditable>\\{value\\}</div><div class='spread-table-pseudo'></div></td>\n\t\t\t<!-- \\END row.{i}.col:loop -->\n\t\t</tr>\n\t\t<!-- END row:loop -->\n\t</table>\n\t<!-- BEGIN showMenu:exist -->\n\t<ul class=\"spread-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t\t<!-- BEGIN mode:touch#cell -->\n\t\t<li data-action-click=\"mergeCells\"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"changeCellTypeTo(th)\"><!-- BEGIN lang:touch#ja -->thに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to th<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"changeCellTypeTo(td)\"><!-- BEGIN lang:touch#ja -->tdに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to td<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"align(left)\"><!-- BEGIN lang:touch#ja -->左寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align left<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"align(center)\"><!-- BEGIN lang:touch#ja -->中央寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align center<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"align(right)\"><!-- BEGIN lang:touch#ja -->右寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align right<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"splitCell()\"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></li>\n\t\t<!-- END mode:touch#cell -->\n\t\t<!-- BEGIN mode:touch#col -->\n\t\t<li data-action-click=\"insertColLeft({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->左に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the left<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"insertColRight({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->右に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the right<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"removeCol({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->列を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove column<!-- END lang:touch#en --></li>\n\t\t<!-- END mode:touch#col -->\n\t\t<!-- BEGIN mode:touch#row -->\n\t\t<li data-action-click=\"insertRowAbove({selectedColNo})\"><!-- BEGIN lang:touch#ja -->上に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row above<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"insertRowBelow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->下に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row below<!-- END lang:touch#en --></li>\n\t\t<li data-action-click=\"removeRow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->行を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove row<!-- END lang:touch#en --></li>\n\t\t<!-- END mode:touch#row -->\n\t</ul>\n\t<!-- END showMenu:exist -->\n\t<!-- BEGIN selectArea:exist -->\n\t<!-- END selectArea:exist -->\n</div>\n";
 
 },{}],12:[function(require,module,exports){
 "use strict";
