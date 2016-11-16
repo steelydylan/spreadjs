@@ -13,7 +13,8 @@
     "build:lib": "browserify ./src/index.js -t [ babelify --presets [ es2015 ] ] -t [ stringify --extensions [.html .css] ] -o ./index.js",
     "watch": "watchify ./src/index.js -t [ babelify --presets [ es2015 ] ] -t [ stringify --extensions [.html .css] ]  --standalone Spread -o ./build/spread.js",
     "watch:lib": "watchify ./src/index.js -t [ babelify --presets [ es2015 ] ] -t [ stringify --extensions [.html .css] ] -o ./index.js",
-    "watch:all": "npm run watch & npm run watch:lib"
+    "watch:all": "npm run watch & npm run watch:lib",
+    "format": "standard-format -w ./src/index.js"
   },
   "main": "./index.js",
   "devDependencies": {
