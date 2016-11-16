@@ -279,8 +279,8 @@ class Spread extends aTemplate {
 		var $target = $(this.e.target);
 		this.e.preventDefault();
 		this.data.showMenu = true;
-		this.data.menuX = parseInt($target.offset().left) - parseInt($ele.offset().left);
-		this.data.menuY = parseInt($target.offset().top) - parseInt($ele.offset().top);
+		this.data.menuX = this.e.clientX;
+		this.data.menuY = this.e.clientY;
 		this.update();
 	}
 

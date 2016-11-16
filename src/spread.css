@@ -41,15 +41,15 @@
 	font-weight: normal;
 }
 
-.spread-table .left{
+.spread-table .left {
 	text-align: left;
 }
 
-.spread-table .right{
+.spread-table .right {
 	text-align: right;
 }
 
-.spread-table .center{
+.spread-table .center {
 	text-align: center;
 }
 
@@ -81,9 +81,10 @@
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
+	z-index: 999999;
 	background-color: #fff;
 	border: 1px solid #666;
 	color: #474747;
@@ -108,11 +109,11 @@
 	position: relative;
 }
 
-.spread-table-header .selected{
+.spread-table-header .selected {
 	background-color: #eaf2f9;
 }
 
-.spread-table-side.selected{
+.spread-table-side.selected {
 	background-color: #eaf2f9;
 }
 
@@ -121,65 +122,65 @@
 	position: relative;
 }
 
-.spread-table-btn-list{
+.spread-table-btn-list {
 	margin-bottom: 10px;
 	display: table;
 }
 
-.spread-table-btn{
+.spread-table-btn {
 	display: table-cell;
 	border-left: none;
-	border: 1px solid #D9D9D9;
-	background-color: #F2F2F2;
+	border: 1px solid #d9d9d9;
+	background-color: #f2f2f2;
 	font-size: 12px;
 	padding: 3px 5px;
 }
 
-.spread-table-btn:first-child{
+.spread-table-btn:first-child {
 	border-top-left-radius: 3px;
 	border-bottom-left-radius: 3px;
 }
 
-.spread-table-btn:last-child{
+.spread-table-btn:last-child {
 	border-top-right-radius: 3px;
 	border-bottom-right-radius: 3px;
 }
 
-.spread-table-toggle-btn{
+.spread-table-toggle-btn {
 	display: inline-block;
-    border: 1px solid #CCC;
-    padding: 5px;
-    position: absolute;
-    right: 5px;
-    top: 5px;
-    cursor: pointer;
-    display: none;
+	border: 1px solid #ccc;
+	padding: 5px;
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	cursor: pointer;
+	display: none;
 }
 
-.spread-table-header th:hover .spread-table-toggle-btn{
+.spread-table-header th:hover .spread-table-toggle-btn {
 	display: block;
 }
 
-.spread-table-side:hover .spread-table-toggle-btn{
+.spread-table-side:hover .spread-table-toggle-btn {
 	display: block;
 }
 
-.spread-table-toggle-btn:after{
-    content:"";
-    display: block;
-    border: solid transparent;
+.spread-table-toggle-btn:after {
+	content: "";
+	display: block;
+	border: solid transparent;
 	content: " ";
 	height: 0;
 	width: 0;
 	border-color: rgba(136, 183, 213, 0);
-    border-top-color: #88b7d5;
-    border-width: 5px;
-    margin-left: -5px;
-    position: absolute;
-    top: 2px;
-    left: 5px;
+	border-top-color: #88b7d5;
+	border-width: 5px;
+	margin-left: -5px;
+	position: absolute;
+	top: 2px;
+	left: 5px;
 }
 
-.spread-table-first{
+.spread-table-first {
 	width: 15px;
 }
