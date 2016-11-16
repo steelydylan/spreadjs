@@ -1,10 +1,7 @@
-var aTemplate = require("./a-template.js");
+var aTemplate = require("./aTemplate.js");
 var $ = require("zepto-browserify").$;
 var toMarkdown = require("./table2md.js");
 var clone = require('clone');
-var template = require("./table.html");
-var returnTable = require("./return-table.html");
-var style = require("./spread.css");
 var ids = [];
 $("body").append("<style>"+style+"</style>");
 $("body").append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>");
@@ -14,10 +11,10 @@ var defs = {
 }
 class Spread extends aTemplate {
 
-	constructor (ele,option){
-		super();
+	initialize (ele,option){
 		this.id = this.getRandText(10);
 		this.addTemplate(template,this.id);
+		this.inherit();
 		this.data = $.extend({},defs,option);
 		this.data.point = {x:-1,y:-1};
 		this.data.selectedRowNo = -1;
@@ -27,7 +24,6 @@ class Spread extends aTemplate {
 		this.data.highestRow = this.highestRow;
 		this.data.history = [];
 		this.data.history.push(clone(this.data.row));
-		this.data.convert = {};
 		this.data.convert.noToEn = this.noToEn;
 		$(ele).wrap("<div data-id='"+this.id+"'></div>");
 		$(ele).remove();

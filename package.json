@@ -9,8 +9,8 @@
     "zepto-browserify": "^1.1.6-1"
   },
   "scripts": {
-    "build": "browserify ./src/index.js -t [ babelify --presets [ es2015 ]] -t [ stringify --extensions [.html .css] ]  --standalone Spread -o ./build/spread.js",
-    "build:watch": "watchify ./src/index.js -t [ babelify --presets [ es2015 ]] -t [ stringify --extensions [.html .css] ]  --standalone Spread -o ./build/spread.js"
+    "build": "browserify ./src/index.js -t [ babelify --presets [ es2015 ] ] -t [ stringify --extensions [.html .css] ] --standalone Spread -o ./build/spread.js",
+    "build:watch": "watchify ./src/index.js -t [ babelify --presets [ es2015 ] ] -t [ stringify --extensions [.html .css] ]  --standalone Spread -o ./build/spread.js"
   },
   "main": "./src/index.js",
   "devDependencies": {
