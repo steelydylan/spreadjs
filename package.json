@@ -2,7 +2,7 @@
   "name": "Spread",
   "version": "0.0.1",
   "dependencies": {
-    "a-template": "0.0.4",
+    "a-template": "0.0.7",
     "clone": "^2.0.0",
     "jquery": "^3.1.1",
     "stringify": "^5.1.0",
@@ -10,7 +10,8 @@
   },
   "scripts": {
     "build": "browserify ./src/index.js -t [ babelify --presets [ es2015 ] ] -t [ stringify --extensions [.html .css] ] --standalone Spread -o ./build/spread.js",
-    "build:watch": "watchify ./src/index.js -t [ babelify --presets [ es2015 ] ] -t [ stringify --extensions [.html .css] ]  --standalone Spread -o ./build/spread.js"
+    "build:watch": "watchify ./src/index.js -t [ babelify --presets [ es2015 ] ] -t [ stringify --extensions [.html .css] ]  --standalone Spread -o ./build/spread.js",
+    "build:lib": "browserify ./src/index.js -t [ babelify --presets [ es2015 ] ] -t [ stringify --extensions [.html .css] ] -o ./index.js"
   },
   "main": "./src/index.js",
   "devDependencies": {
