@@ -27,73 +27,77 @@ var getObjectById = function getObjectById(id) {
 	}
 	return null;
 };
-$(document).on("input change click", "[data-bind]", function (e) {
-	var _this = this;
+if (typeof document !== "undefined") {
+	//data binding
+	$(document).on("input change click", "[data-bind]", function (e) {
+		var _this = this;
 
-	var data = $(this).data("bind");
-	var val = $(this).val();
-	var attr = $(this).attr("href");
-	if (attr) {
-		val = attr.replace("#", "");
-	}
-	var id = $(this).parents("[data-id]").data("id");
-	if (id) {
-		var obj = getObjectById(id);
-		if ($(e.target).attr("type") == "radio") {
-			if ($(this).is(":checked")) {
-				obj.updateDataByString(data, val);
-			} else {
-				obj.updateDataByString(data, '');
-			}
-		} else if ($(e.target).attr("type") == "checkbox") {
-			var name = $(this).attr("name");
-			var arr = [];
-			$(":checkbox[name=" + name + "]").each(function () {
-				if ($(_this).is(":checked")) {
-					arr.push($(_this).val());
-				}
-			});
-			obj.updateDataByString(data, arr);
-		} else {
-			obj.updateDataByString(data, val);
+		var data = $(this).data("bind");
+		var val = $(this).val();
+		var attr = $(this).attr("href");
+		if (attr) {
+			val = attr.replace("#", "");
 		}
-	}
-});
-$(document).on(eventType, dataAction, function (e) {
-	if (e.type == "click" && $(e.target).is("select")) {
-		return;
-	}
-	if (e.type == "input" && $(e.target).attr("type") == "button") {
-		return;
-	}
-	var events = eventType.split(" ");
-	var $self = $(this);
-	var action = "action";
-	events.forEach(function (event) {
-		if ($self.data("action-" + event)) {
-			if (e.type === event) {
-				action += "-" + event;
+		var id = $(this).parents("[data-id]").data("id");
+		if (id) {
+			var obj = getObjectById(id);
+			if ($(e.target).attr("type") == "radio") {
+				if ($(this).is(":checked")) {
+					obj.updateDataByString(data, val);
+				} else {
+					obj.updateDataByString(data, '');
+				}
+			} else if ($(e.target).attr("type") == "checkbox") {
+				var name = $(this).attr("name");
+				var arr = [];
+				$(":checkbox[name=" + name + "]").each(function () {
+					if ($(_this).is(":checked")) {
+						arr.push($(_this).val());
+					}
+				});
+				obj.updateDataByString(data, arr);
+			} else {
+				obj.updateDataByString(data, val);
 			}
 		}
 	});
-	var string = $self.data(action);
-	if (!string) {
-		return;
-	}
-	var action = string.replace(/\(.*?\);?/, "");
-	var parameter = string.replace(/(.*?)\((.*?)\);?/, "$2");
-	var pts = parameter.split(","); //引き数
-	var id = $self.parents("[data-id]").data("id");
-	if (id) {
-		var obj = getObjectById(id);
-		obj.e = e;
-		if (obj.method && obj.method[action]) {
-			obj.method[action].apply(obj, pts);
-		} else if (obj[action]) {
-			obj[action].apply(obj, pts);
+	//action
+	$(document).on(eventType, dataAction, function (e) {
+		if (e.type == "click" && $(e.target).is("select")) {
+			return;
 		}
-	}
-});
+		if (e.type == "input" && $(e.target).attr("type") == "button") {
+			return;
+		}
+		var events = eventType.split(" ");
+		var $self = $(this);
+		var action = "action";
+		events.forEach(function (event) {
+			if ($self.data("action-" + event)) {
+				if (e.type === event) {
+					action += "-" + event;
+				}
+			}
+		});
+		var string = $self.data(action);
+		if (!string) {
+			return;
+		}
+		var action = string.replace(/\(.*?\);?/, "");
+		var parameter = string.replace(/(.*?)\((.*?)\);?/, "$2");
+		var pts = parameter.split(","); //引き数
+		var id = $self.parents("[data-id]").data("id");
+		if (id) {
+			var obj = getObjectById(id);
+			obj.e = e;
+			if (obj.method && obj.method[action]) {
+				obj.method[action].apply(obj, pts);
+			} else if (obj[action]) {
+				obj[action].apply(obj, pts);
+			}
+		}
+	});
+}
 
 var aTemplate = function () {
 	function aTemplate(opt) {
@@ -6009,13 +6013,18 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/*!
+ * spread.js Ver.0.0.1 (http://horicdesign.com)
+ * Copyright steelydylan | MIT License
+ *
+ */
 var aTemplate = require('a-template');
 var $ = require('zepto-browserify').$;
-var toMarkdown = require('./table2md.js');
 var clone = require('clone');
-var template = require('./table.html');
-var returnTable = require('./return-table.html');
-var style = require('./spread.css');
+var toMarkdown = require('./src/table2md.js');
+var template = require('./src/table.html');
+var returnTable = require('./src/return-table.html');
+var style = require('./src/spread.css');
 var ids = [];
 $('body').append('<style>' + style + '</style>');
 $('body').append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>");
@@ -6830,7 +6839,7 @@ var Spread = function (_aTemplate) {
 
 module.exports = Spread;
 
-},{"./return-table.html":10,"./spread.css":11,"./table.html":12,"./table2md.js":13,"a-template":1,"clone":5,"zepto-browserify":8}],10:[function(require,module,exports){
+},{"./src/return-table.html":10,"./src/spread.css":11,"./src/table.html":12,"./src/table2md.js":13,"a-template":1,"clone":5,"zepto-browserify":8}],10:[function(require,module,exports){
 module.exports = "<table>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<!-- \\BEGIN type:touch#th -->\n\t\t<th<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 -->>\\{value\\}</th>\n\t\t<!-- \\END type:touch#th -->\n\t\t<!-- \\BEGIN type:touch#td -->\n\t\t<td<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 -->>\\{value\\}</td>\n\t\t<!-- \\END type:touch#td -->\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n";
 
 },{}],11:[function(require,module,exports){

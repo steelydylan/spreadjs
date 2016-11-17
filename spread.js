@@ -1,10 +1,15 @@
+/*!
+ * spread.js Ver.0.0.1 (http://horicdesign.com)
+ * Copyright steelydylan | MIT License
+ *
+ */
 var aTemplate = require('a-template')
 var $ = require('zepto-browserify').$
-var toMarkdown = require('./table2md.js')
 var clone = require('clone')
-var template = require('./table.html')
-var returnTable = require('./return-table.html')
-var style = require('./spread.css')
+var toMarkdown = require('./src/table2md.js')
+var template = require('./src/table.html')
+var returnTable = require('./src/return-table.html')
+var style = require('./src/spread.css')
 var ids = []
 $('body').append('<style>' + style + '</style>')
 $('body').append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>")
