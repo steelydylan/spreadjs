@@ -3,12 +3,12 @@
   "version": "0.0.2",
   "main": "./index.js",
   "scripts": {
-    "build": "browserify ./src/index.js -t [ babelify --presets [ es2015 ] ] -t [ stringify --extensions [.html .css] ] --standalone Spread -o ./build/spread.js",
+    "bundle": "browserify ./src/index.js -t [ babelify --presets [ es2015 ] ] -t [ stringify --extensions [.html .css] ] -p licensify --standalone Spread -o ./build/spread.js",
+    "minifyjs": "uglifyjs ./build/spread.js --comments 'license' -o ./build/spread.min.js",
+    "build": "npm run bundle && npm run minifyjs",
     "build:lib": "babel ./src/index.js --presets es2015 --out-file ./index.js",
-    "watch": "watchify ./src/index.js -t [ babelify --presets [ es2015 ] ] -t [ stringify --extensions [.html .css] ]  --standalone Spread -o ./build/spread.js",
-    "watch:lib": "watch 'npm run build:lib' ./src/",
-    "watch:all": "npm run watch & npm run watch:lib",
-    "format": "standard-format -w ./src/index.js"
+    "watch": "watch 'npm run build:lib && npm run build && npm run format' ./src/",
+    "format": "standard-format -w ./src/**.js"
   },
   "dependencies": {
     "a-template": "0.0.9",
@@ -20,7 +20,9 @@
     "babel-preset-es2015": "^6.18.0",
     "babelify": "^7.3.0",
     "browserify": "^13.1.1",
-    "watchify": "^3.7.0",
-    "watch": "^1.0.1"
+    "licensify": "^3.1.2",
+    "uglifyjs": "^2.4.10",
+    "watch": "^1.0.1",
+    "watchify": "^3.7.0"
   }
 }
