@@ -19,13 +19,12 @@ var defs = {
 }
 
 class Spread extends aTemplate {
-
   constructor (ele, option) {
     super()
     this.id = this.getRandText(10)
     this.addTemplate(template, this.id)
     this.data = $.extend({}, defs, option)
-    this.data.point = {x: -1,y: -1}
+    this.data.point = {x: -1, y: -1}
     this.data.selectedRowNo = -1
     this.data.selectedColNo = -1
     this.data.showBtnList = true
@@ -99,7 +98,7 @@ class Spread extends aTemplate {
     var minY = Math.min.apply(Math, minYArr)
     var maxX = Math.max.apply(Math, maxXArr)
     var maxY = Math.max.apply(Math, maxYArr)
-    return {x: minX,y: minY,width: maxX - minX,height: maxY - minY}
+    return {x: minX, y: minY, width: maxX - minX, height: maxY - minY}
   }
 
   getSelectedPoints () {

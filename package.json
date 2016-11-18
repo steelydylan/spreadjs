@@ -7,8 +7,7 @@
     "minifyjs": "uglifyjs ./build/spread.js --comments 'license' -o ./build/spread.min.js",
     "build": "npm run bundle && npm run minifyjs",
     "build:lib": "babel ./src/index.js --presets es2015 --out-file ./index.js",
-    "watch": "watch 'npm run build:lib && npm run build && npm run format' ./src/",
-    "format": "standard-format -w ./src/**.js"
+    "watch": "watch 'npm run build:lib && npm run build && npm run format' ./src/"
   },
   "dependencies": {
     "a-template": "0.0.9",
