@@ -727,8 +727,6 @@ class Spread extends aTemplate {
         }
       })
     }
-    console.log(rows);
-    //Todo 意図したrowのlengthが0だった時の対策
     for (var i = selectedPoint.y, n = i + height -1; i < n; i++){
     	if(!rows[i]){
     		rows[i] = [];
