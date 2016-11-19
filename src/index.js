@@ -690,6 +690,7 @@ class Spread extends aTemplate {
     var selectedPoint = this.getSelectedPoint()
     var bound = {x: 0, y: selectedPoint.y, width: selectedPoint.x, height: selectedPoint.height}
     var points = this.getAllPoints()
+    var currentIndex = this.getCellIndexByPos(selectedPoint.x, selectedPoint.y)
     var currentCell = this.getCellByPos(selectedPoint.x, selectedPoint.y)
     var width = parseInt(currentCell.colspan)
     var height = parseInt(currentCell.rowspan)
@@ -698,7 +699,7 @@ class Spread extends aTemplate {
     var cells = []
     var rows = []
     points.forEach(function (point) {
-      if (self.hitTest(bound, point) && point.y >= selectedPoint.y) {
+      if (self.hitTest(bound, point)) {
         var index = self.getCellIndexByPos(point.x, point.y)
         var cell = self.getCellByPos(point.x, point.y)
         targets.push({index: index, cell: cell})
@@ -706,12 +707,18 @@ class Spread extends aTemplate {
     })
     targets.forEach(function (item) {
       var row = item.index.row - 1
+      if(item.index.row < currentIndex.row){
+      	return;
+      }
       if (!rows[row]) {
         rows[row] = []
       }
       rows[row].push(item)
     })
     for (var i = 1, n = rows.length; i < n; i++) {
+    	if(!rows[i]){
+    		continue;
+    	}
       rows[i].sort(function (a, b) {
         if (a.index.col > b.index.col) {
           return 1
@@ -720,20 +727,16 @@ class Spread extends aTemplate {
         }
       })
     }
-    if(rows.length === 0){
-    	for (var i = 0, n = height; i < n; i++) {
-    		for (var t = 0, m = width; t < m; t++){
-    			self.insertCellAt(i + selectedPoint.y, 0, {type: 'td',colspan: 1,rowspan: 1,value: '', selected: true});
-    		}
-    	}
-    }else{
-     	rows.forEach(function (row) {
-	      var index = row[row.length - 1].index
-	      for (var i = 0, n = width; i < n; i++) {
-	        self.insertCellAt(index.row, index.col + 1, {type: 'td',colspan: 1,rowspan: 1,value: '', selected: true})
-	      }
-	    })
-    }
+    //Todo 意図したrowのlengthが0だった時の対策
+
+
+   	rows.forEach(function (row) {
+   		var col = row[row.length - 1];
+      var index = col.index
+      for (var i = 0; i < width; i++) {
+        self.insertCellAt(index.row, index.col + 1, {type: 'td',colspan: 1,rowspan: 1,value: '', selected: true})
+      }
+    })
     this.removeCell(currentCell)
     this.data.showMenu = false
     this.data.history.push(clone(this.data.row))
