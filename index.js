@@ -767,12 +767,12 @@ var Spread = function (_aTemplate) {
         if (self.hitTest(bound, point)) {
           var index = self.getCellIndexByPos(point.x, point.y);
           var cell = self.getCellByPos(point.x, point.y);
-          targets.push({ index: index, cell: cell });
+          targets.push(index);
         }
       });
       targets.forEach(function (item) {
-        var row = item.index.row - 1;
-        if (item.index.row < currentIndex.row) {
+        var row = item.row;
+        if (item.row < currentIndex.row) {
           return;
         }
         if (!rows[row]) {
@@ -785,19 +785,23 @@ var Spread = function (_aTemplate) {
           continue;
         }
         rows[i].sort(function (a, b) {
-          if (a.index.col > b.index.col) {
+          if (a.col > b.col) {
             return 1;
           } else {
             return -1;
           }
         });
       }
+      console.log(rows);
       //Todo 意図したrowのlengthが0だった時の対策
-
-
+      for (var i = selectedPoint.y, n = i + height - 1; i < n; i++) {
+        if (!rows[i]) {
+          rows[i] = [];
+          rows[i].push({ row: i, col: -1 });
+        }
+      }
       rows.forEach(function (row) {
-        var col = row[row.length - 1];
-        var index = col.index;
+        var index = row[row.length - 1];
         for (var i = 0; i < width; i++) {
           self.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: 1, rowspan: 1, value: '', selected: true });
         }
