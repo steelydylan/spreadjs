@@ -727,7 +727,7 @@ class Spread extends aTemplate {
         }
       })
     }
-    for (var i = selectedPoint.y, n = i + height -1; i < n; i++){
+    for (var i = selectedPoint.y, n = i + height; i < n; i++){
     	if(!rows[i]){
     		rows[i] = [];
     		rows[i].push({row:i,col:-1});
