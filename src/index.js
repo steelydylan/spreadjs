@@ -698,7 +698,7 @@ class Spread extends aTemplate {
     var cells = []
     var rows = []
     points.forEach(function (point) {
-      if (self.hitTest(bound, point)) {
+      if (self.hitTest(bound, point) && point.y >= selectedPoint.y) {
         var index = self.getCellIndexByPos(point.x, point.y)
         var cell = self.getCellByPos(point.x, point.y)
         targets.push({index: index, cell: cell})
@@ -723,14 +723,14 @@ class Spread extends aTemplate {
     if(rows.length === 0){
     	for (var i = 0, n = height; i < n; i++) {
     		for (var t = 0, m = width; t < m; t++){
-    			self.insertCellAt(i + selectedPoint.y, 0, {type: 'td',colspan: 1,rowspan: 1,value: ''});
+    			self.insertCellAt(i + selectedPoint.y, 0, {type: 'td',colspan: 1,rowspan: 1,value: '', selected: true});
     		}
     	}
     }else{
      	rows.forEach(function (row) {
 	      var index = row[row.length - 1].index
 	      for (var i = 0, n = width; i < n; i++) {
-	        self.insertCellAt(index.row, index.col + 1, {type: 'td',colspan: 1,rowspan: 1,value: ''})
+	        self.insertCellAt(index.row, index.col + 1, {type: 'td',colspan: 1,rowspan: 1,value: '', selected: true})
 	      }
 	    })
     }
