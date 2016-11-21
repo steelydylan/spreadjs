@@ -15,7 +15,12 @@ $('body').append('<style>' + style + '</style>')
 $('body').append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>")
 var defs = {
   showBtnList: true,
-  lang: 'en'
+  lang: 'en',
+  style:{
+  	alignLeft:'class="spread-table-left"',
+  	alignCenter:'class="spread-table-center"',
+  	alignRight:'class="spread-table-right"'
+  }
 }
 
 class Spread extends aTemplate {
@@ -482,7 +487,7 @@ class Spread extends aTemplate {
         this.selectRange(a, b)
       }
     }else if (this.e.type == 'mousedown') {
-      if (this.e.button !== 2) {
+      if (this.e.button !== 2 && !this.e.ctrlKey) {
         this.mousedown = true
         if (!this.data.row[a].col[b].selected) {
           this.select(a, b)
