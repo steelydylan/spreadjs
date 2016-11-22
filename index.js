@@ -20,6 +20,7 @@ var toMarkdown = require('./table2md.js');
 var template = require('./table.html');
 var returnTable = require('./return-table.html');
 var style = require('./spread.css');
+var equals = require('array-equal');
 var ids = [];
 $('body').append('<style>' + style + '</style>');
 $('body').append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>");
@@ -366,6 +367,10 @@ var Spread = function (_aTemplate) {
     key: 'undo',
     value: function undo() {
       var data = this.data.history.pop();
+      console.log(data, this.data.row);
+      while (equals(data, this.data.row)) {
+        data = this.data.history.pop();
+      }
       if (data) {
         this.data.row = data;
         this.update();
