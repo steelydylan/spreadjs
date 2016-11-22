@@ -15,7 +15,15 @@ $('body').append('<style>' + style + '</style>')
 $('body').append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>")
 var defs = {
   showBtnList: true,
-  lang: 'en'
+  lang: 'en',
+  mark:{
+  	align:{
+  		default:'left',
+  		left:'class="left"',
+  		center:'class="center"',
+  		right:'class="right"'
+  	}
+  }
 }
 
 class Spread extends aTemplate {
@@ -32,8 +40,9 @@ class Spread extends aTemplate {
     this.data.highestRow = this.highestRow
     this.data.history = []
     this.data.history.push(clone(this.data.row))
-    this.data.convert = {}
-    this.data.convert.noToEn = this.noToEn
+    this.convert = {}
+    this.convert.noToEn = this.noToEn
+    this.convert.getStyleByAlign = this.getStyleByAlign
     $(ele).wrap("<div data-id='" + this.id + "'></div>")
     $(ele).remove()
     this.update()
@@ -318,13 +327,11 @@ class Spread extends aTemplate {
       this.afterRendered()
     }
   }
-  // n個前の状況に戻す
-  backToState (state) {
-    console.log(this.data.history)
-    var data = this.data.history.splice(-1 * parseInt(state))
-    console.log(data)
-    if (data && data[0]) {
-      this.data.row = data[0]
+
+  undo () {
+    var data = this.data.history.pop()
+    if (data) {
+      this.data.row = data
       this.update()
     }
   }
@@ -771,6 +778,13 @@ class Spread extends aTemplate {
 
   noToEn (i) {
     return String.fromCharCode(97 + parseInt(i))
+  }
+
+  getStyleByAlign(align){
+  	if(this.data.mark.align.default === align){
+  		return '';
+  	}
+  	return ' '+this.data.mark.align[align];
   }
 }
 

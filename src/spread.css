@@ -13,6 +13,12 @@
 	z-index: -1;
 }
 
+.spread-table-wrapper {
+	width: 100%;
+	-ms-overflow-x: scroll;
+	overflow-x: scroll;
+}
+
 .spread-table {
 	border-collapse: collapse;
 	table-layout: fixed;
@@ -30,10 +36,16 @@
 	text-align: left;
 	width: 100px;
 	height: 15px;
+	white-space: nowrap;
 	overflow: hidden;
 	position: relative;
 	z-index: 0;
 	border: 1px solid #cccccc;
+}
+
+.spread-table td:first-child,
+.spread-table th:first-child {
+	width: 50px;
 }
 
 .spread-table th {

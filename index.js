@@ -25,7 +25,15 @@ $('body').append('<style>' + style + '</style>');
 $('body').append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>");
 var defs = {
   showBtnList: true,
-  lang: 'en'
+  lang: 'en',
+  mark: {
+    align: {
+      default: 'left',
+      left: 'class="left"',
+      center: 'class="center"',
+      right: 'class="right"'
+    }
+  }
 };
 
 var Spread = function (_aTemplate) {
@@ -47,8 +55,9 @@ var Spread = function (_aTemplate) {
     _this.data.highestRow = _this.highestRow;
     _this.data.history = [];
     _this.data.history.push(clone(_this.data.row));
-    _this.data.convert = {};
-    _this.data.convert.noToEn = _this.noToEn;
+    _this.convert = {};
+    _this.convert.noToEn = _this.noToEn;
+    _this.convert.getStyleByAlign = _this.getStyleByAlign;
     $(ele).wrap("<div data-id='" + _this.id + "'></div>");
     $(ele).remove();
     _this.update();
@@ -353,16 +362,12 @@ var Spread = function (_aTemplate) {
         this.afterRendered();
       }
     }
-    // n個前の状況に戻す
-
   }, {
-    key: 'backToState',
-    value: function backToState(state) {
-      console.log(this.data.history);
-      var data = this.data.history.splice(-1 * parseInt(state));
-      console.log(data);
-      if (data && data[0]) {
-        this.data.row = data[0];
+    key: 'undo',
+    value: function undo() {
+      var data = this.data.history.pop();
+      if (data) {
+        this.data.row = data;
         this.update();
       }
     }
@@ -841,6 +846,14 @@ var Spread = function (_aTemplate) {
     key: 'noToEn',
     value: function noToEn(i) {
       return String.fromCharCode(97 + parseInt(i));
+    }
+  }, {
+    key: 'getStyleByAlign',
+    value: function getStyleByAlign(align) {
+      if (this.data.mark.align.default === align) {
+        return '';
+      }
+      return ' ' + this.data.mark.align[align];
     }
   }]);
 
