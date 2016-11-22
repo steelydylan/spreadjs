@@ -489,7 +489,7 @@ class Spread extends aTemplate {
         this.selectRange(a, b)
       }
     }else if (this.e.type == 'mousedown') {
-      if (this.e.button !== 2) {
+      if (this.e.button !== 2 && !this.e.ctrlKey) {
         this.mousedown = true
         if (!this.data.row[a].col[b].selected) {
           this.select(a, b)
