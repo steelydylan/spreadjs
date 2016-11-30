@@ -2,8 +2,8 @@
 var fs = require("fs");
 var process_path = process.cwd();
 var path = require('path');
-fs.readFile(path.resolve(process_path, "./index.js"), 'utf8', function(err, data){
-	data = data.replace(/require\('(.*?)\.[html|css]'\)/g, function(a,b){
-		console.log(a);
-	});
+var text = fs.readFileSync(path.resolve(process_path, "./src/index.js"), 'utf8');
+text = text.replace(/require\('((.*?)\.(html|css))'\)/g,function(a,b){
+	return "\`"+fs.readFileSync(path.resolve(process_path,"./src/",b), 'utf8')+"\`";
 });
+fs.writeFileSync(path.resolve(process_path,"./src/prebuild.js"),text, 'utf8');
