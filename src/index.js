@@ -1,8 +1,3 @@
-/*!
- * spread.js Ver.0.0.1 (http://horicdesign.com)
- * Copyright steelydylan | MIT License
- *
- */
 var aTemplate = require('a-template')
 var $ = require('zepto-browserify').$
 var clone = require('clone')
