@@ -591,12 +591,18 @@ class Spread extends aTemplate {
   }
 
   undo () {
-    var data = this.data.history.pop()
-    console.log(data,this.data.row)
+    var data = this.data.row
+    if(this.data.history.length === 0){
+    	return;
+    }
     while(equals(data,this.data.row)){
     	data = this.data.history.pop()
     }
+
     if (data) {
+    	if(this.data.history.length === 0){
+    		this.data.history.push(clone(data));
+    	}
       this.data.row = data
       this.update()
     }
@@ -685,6 +691,7 @@ class Spread extends aTemplate {
         cell.colspan = parseInt(cell.colspan) - 1
       }
     })
+    this.data.history.push(clone(this.data.row))
     this.update()
   }
   removeRow (selectedno) {
@@ -738,6 +745,7 @@ class Spread extends aTemplate {
     if (insertCells.length > 0) {
       this.data.row[selectedno] = {col: insertCells}
     }
+    this.data.history.push(clone(this.data.row))
     this.update()
   }
   updateTable (b, a) {
